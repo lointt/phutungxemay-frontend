@@ -36,6 +36,7 @@ yarn-error.log*
 # open-next & aws lambda zip
 .open-next/
 function.zip
+.admin_token_cache.json
 
 # vercel
 .vercel
