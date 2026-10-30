@@ -1,36 +1,32 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Phụ Tùng Xe Máy Chính Hãng — Frontend & AWS Serverless
 
-## Getting Started
+Ứng dụng thương mại điện tử chuyên cung cấp phụ tùng xe máy chính hãng, tích hợp **Trợ lý Tư vấn Phụ tùng AI (WebSocket + RAG)**, **Bộ lọc sản phẩm đa tiêu chí tức thì**, và hạ tầng **AWS Serverless** (`CloudFront`, `S3`, `DynamoDB`, `Cognito`, `API Gateway`).
 
-First, run the development server:
+👉 **Xem tài liệu kỹ thuật chi tiết (bao gồm toàn bộ lệnh AWS CLI, Script & Code):**  
+📄 [`docs/HUONG_DAN_KY_THUAT_VA_CLI.md`](./docs/HUONG_DAN_KY_THUAT_VA_CLI.md)
 
-```bash
+---
+
+## Khởi Chạy Nhanh (Quick Start)
+
+```powershell
+# 1. Cài đặt thư viện
+npm install
+
+# 2. Chạy môi trường Development (http://localhost:3000)
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# 3. Build bản Production
+npm run build
+npm run start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Các Lệnh AWS CLI Thường Dùng
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```powershell
+# Đồng bộ ảnh sản phẩm lên S3 Bucket
+aws s3 sync ./public/images s3://phutungxemay-product-images-2026/images/ --region ap-southeast-1 --content-type "image/jpeg" --cache-control "public, max-age=31536000"
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Kiểm tra tổng số sản phẩm trong bảng DynamoDB Products
+aws dynamodb scan --table-name Products --select "COUNT" --region ap-southeast-1
+```
