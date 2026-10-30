@@ -71,6 +71,7 @@ export interface ProductFilter {
   compatible_brand?: string;  // Lọc theo hãng xe
   compatible_model?: string;  // Lọc theo model xe
   search?: string;            // Từ khoá tìm kiếm
+  sort?: string;              // Sắp xếp: 'popular' | 'price_asc' | 'price_desc' | 'newest'
 }
 
 /** Response từ GET /api/products */

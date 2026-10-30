@@ -4,8 +4,9 @@
 
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
-import { ProductCard, ProductCardSkeleton } from '@/components/customer/product-card';
+import { ProductCard } from '@/components/customer/product-card';
 import ProductFilters from '@/components/customer/product-filters';
+import { ProductSort } from '@/components/customer/product-sort';
 import { getProducts } from '@/lib/server-api';
 import { getCategoryLabel } from '@/lib/utils';
 import type { ProductCategory } from '@/types/product';
@@ -21,6 +22,7 @@ interface SearchParams {
   in_stock?: string;
   compatible_brand?: string;
   compatible_model?: string;
+  sort?: string;
   page?: string;
 }
 
@@ -57,6 +59,7 @@ export default async function ProductsPage({ searchParams }: Props) {
     in_stock: params.in_stock === 'true',
     compatible_brand: params.compatible_brand,
     compatible_model: params.compatible_model,
+    sort: params.sort,
   });
 
   const pageTitle = params.search
@@ -87,20 +90,15 @@ export default async function ProductsPage({ searchParams }: Props) {
         {/* Products Grid */}
         <div className="flex-1 min-w-0">
           {/* Header row */}
-          <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center justify-between mb-5 gap-3">
             <div>
               <h1 className="text-xl font-bold text-gray-900">{pageTitle}</h1>
               <p className="text-sm text-gray-500 mt-0.5">
                 {data.total > 0 ? `${data.total} sản phẩm` : 'Không tìm thấy sản phẩm nào'}
               </p>
             </div>
-            {/* Sort (UI only, Phase 4 sẽ kết nối API) */}
-            <select className="text-sm border border-gray-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 text-gray-700">
-              <option>Phổ biến nhất</option>
-              <option>Giá tăng dần</option>
-              <option>Giá giảm dần</option>
-              <option>Mới nhất</option>
-            </select>
+            {/* Sort dropdown kết nối URL query ?sort=... */}
+            <ProductSort />
           </div>
 
           {/* Compatible vehicle banner */}

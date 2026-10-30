@@ -7,7 +7,37 @@ import sys
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
-# Danh sách 20 sản phẩm chuẩn theo 6 danh mục:
+# Danh sách 26 mã sản phẩm cũ/lỗi ảnh cần dọn sạch để bảng Products có đúng 20 sản phẩm chuẩn
+OLD_PRODUCT_IDS = [
+    "PROD_BRAKE_003",
+    "PROD_ACC_001",
+    "PROD_OIL_002",
+    "PROD_DRIVE_001",
+    "PROD_OIL_001",
+    "PROD_OIL_003",
+    "PROD_DRIVE_003",
+    "PROD_TYRE_002",
+    "PROD_SHOCK_002",
+    "PROD_SPARK_002",
+    "PROD_BRK_001",
+    "PROD_BRAKE_002",
+    "PROD_BRAKE_001",
+    "PROD_NEW_923",
+    "PROD_LIGHT_001",
+    "PROD_TYRE_001",
+    "PROD_FILTER_001",
+    "PROD_SUSP_001",
+    "PROD_DRV_002",
+    "PROD_DRIVE_002",
+    "PROD_NEW_961",
+    "PROD_FORK_001",
+    "PROD_SPARK_001",
+    "PROD_EXHAUST_001",
+    "PROD_SUSP_002",
+    "PROD_BATT_001",
+]
+
+# Danh sách 20 sản phẩm thực tế chuẩn theo 6 danh mục:
 # Truyền động, Động cơ, Giảm xóc, Hệ thống phanh, Điện - Đèn, Nhớt - Lọc
 products = [
     # --- 1. TRUYỀN ĐỘNG (4 sản phẩm) ---
@@ -23,7 +53,8 @@ products = [
         "image_url": "https://d1ksuy3hfmko20.cloudfront.net/images/did-428hds.jpg",
         "image_urls": ["https://d1ksuy3hfmko20.cloudfront.net/images/did-428hds.jpg"],
         "description": "Sên mạ vàng 10 ly chịu lực kéo cao, êm ái khi chạy tốc độ cao, chống giãn vượt trội.",
-        "compatible_models": ["Winner 150", "Winner X", "Exciter 150", "Sonic 150"]
+        "compatible_models": ["Winner 150", "Winner X", "Exciter 150", "Sonic 150"],
+        "created_at": "2026-10-20T08:00:00Z"
     },
     {
         "ProductID": "PROD_DRV_011",
@@ -37,7 +68,8 @@ products = [
         "image_url": "https://d1ksuy3hfmko20.cloudfront.net/images/nhong-sen-did.jpg",
         "image_urls": ["https://d1ksuy3hfmko20.cloudfront.net/images/nhong-sen-did.jpg"],
         "description": "Nhông dĩa thép carbon C45 tôi cao tần, vận hành bền bỉ cho dòng xe số phổ thông.",
-        "compatible_models": ["Wave Alpha", "Wave RSX", "Future 125", "Sirius"]
+        "compatible_models": ["Wave Alpha", "Wave RSX", "Future 125", "Sirius"],
+        "created_at": "2026-10-19T08:00:00Z"
     },
     {
         "ProductID": "PROD_DRV_012",
@@ -51,7 +83,8 @@ products = [
         "image_url": "https://d1ksuy3hfmko20.cloudfront.net/images/day-curoa-bando.jpg",
         "image_urls": ["https://d1ksuy3hfmko20.cloudfront.net/images/day-curoa-bando.jpg"],
         "description": "Dây curoa cao su tổng hợp chịu nhiệt cao, truyền lực mượt mà, chống trượt nồi xe tay ga.",
-        "compatible_models": ["Air Blade 125", "Air Blade 150", "Vario 150", "Lead 125"]
+        "compatible_models": ["Air Blade 125", "Air Blade 150", "Vario 150", "Lead 125"],
+        "created_at": "2026-10-18T08:00:00Z"
     },
     {
         "ProductID": "PROD_DRV_013",
@@ -65,7 +98,8 @@ products = [
         "image_url": "https://d1ksuy3hfmko20.cloudfront.net/images/bi-noi-fcc.jpg",
         "image_urls": ["https://d1ksuy3hfmko20.cloudfront.net/images/bi-noi-fcc.jpg"],
         "description": "Bộ 6 viên bi nồi chuẩn trọng lượng zin giúp xe tăng tốc mượt, tiết kiệm nhiên liệu.",
-        "compatible_models": ["Vision", "Air Blade 125", "SH Mode", "Vario 125"]
+        "compatible_models": ["Vision", "Air Blade 125", "SH Mode", "Vario 125"],
+        "created_at": "2026-10-17T08:00:00Z"
     },
 
     # --- 2. HỆ THỐNG PHANH (4 sản phẩm) ---
@@ -81,7 +115,8 @@ products = [
         "image_url": "https://d1ksuy3hfmko20.cloudfront.net/images/elig-em050.jpg",
         "image_urls": ["https://d1ksuy3hfmko20.cloudfront.net/images/elig-em050.jpg"],
         "description": "Má phanh gốm Ceramic hiệu suất cao, không kêu, không ăn mòn đĩa phanh, tản nhiệt nhanh.",
-        "compatible_models": ["Exciter 150", "Exciter 155", "Winner X", "Sirius FI"]
+        "compatible_models": ["Exciter 150", "Exciter 155", "Winner X", "Sirius FI"],
+        "created_at": "2026-10-24T08:00:00Z"
     },
     {
         "ProductID": "PROD_BRK_011",
@@ -95,7 +130,8 @@ products = [
         "image_url": "https://d1ksuy3hfmko20.cloudfront.net/images/heo-dau-brembo.jpg",
         "image_urls": ["https://d1ksuy3hfmko20.cloudfront.net/images/heo-dau-brembo.jpg"],
         "description": "Heo phanh Brembo 2 piston đối xứng lực bóp thắng cực nhạy, an toàn khi phanh gấp.",
-        "compatible_models": ["Exciter 150", "Exciter 155", "Winner X", "Vario 150", "SH 150i"]
+        "compatible_models": ["Exciter 150", "Exciter 155", "Winner X", "Vario 150", "SH 150i"],
+        "created_at": "2026-10-23T08:00:00Z"
     },
     {
         "ProductID": "PROD_BRK_012",
@@ -109,7 +145,8 @@ products = [
         "image_url": "https://d1ksuy3hfmko20.cloudfront.net/images/dia-thang-rcb.jpg",
         "image_urls": ["https://d1ksuy3hfmko20.cloudfront.net/images/dia-thang-rcb.jpg"],
         "description": "Đĩa phanh thép không gỉ kết hợp lòng nhôm CNC sắc nét, tản nhiệt nhanh, chống cong vênh.",
-        "compatible_models": ["Exciter 150", "Winner 150", "Winner X"]
+        "compatible_models": ["Exciter 150", "Winner 150", "Winner X"],
+        "created_at": "2026-10-22T08:00:00Z"
     },
     {
         "ProductID": "PROD_BRK_013",
@@ -123,7 +160,8 @@ products = [
         "image_url": "https://d1ksuy3hfmko20.cloudfront.net/images/tay-thang-rcb.jpg",
         "image_urls": ["https://d1ksuy3hfmko20.cloudfront.net/images/tay-thang-rcb.jpg"],
         "description": "Cùm tay thắng RCB chính hãng cho cảm giác bóp êm tay, tăng lực dầu phanh ổn định.",
-        "compatible_models": ["Wave Alpha", "Exciter 150", "Winner X", "Vario 150"]
+        "compatible_models": ["Wave Alpha", "Exciter 150", "Winner X", "Vario 150"],
+        "created_at": "2026-10-21T08:00:00Z"
     },
 
     # --- 3. GIẢM XÓC (3 sản phẩm) ---
@@ -139,7 +177,8 @@ products = [
         "image_url": "https://d1ksuy3hfmko20.cloudfront.net/images/phuoc-yss.jpg",
         "image_urls": ["https://d1ksuy3hfmko20.cloudfront.net/images/phuoc-yss.jpg"],
         "description": "Phuộc bình dầu YSS Thái Lan tăng chỉnh độ nén lò xo, đầm chắc khi ôm cua và chở nặng.",
-        "compatible_models": ["Vario 150", "Air Blade 150", "Vision", "SH Mode"]
+        "compatible_models": ["Vario 150", "Air Blade 150", "Vision", "SH Mode"],
+        "created_at": "2026-10-27T08:00:00Z"
     },
     {
         "ProductID": "PROD_SUS_011",
@@ -153,7 +192,8 @@ products = [
         "image_url": "https://d1ksuy3hfmko20.cloudfront.net/images/phuoc-rcb-vd.jpg",
         "image_urls": ["https://d1ksuy3hfmko20.cloudfront.net/images/phuoc-rcb-vd.jpg"],
         "description": "Phuộc đơn Monoshock có tăng chỉnh Rebound & Compression đầy đủ, ti mạ vàng chống trầy.",
-        "compatible_models": ["Exciter 150", "Exciter 155", "Winner X"]
+        "compatible_models": ["Exciter 150", "Exciter 155", "Winner X"],
+        "created_at": "2026-10-26T08:00:00Z"
     },
     {
         "ProductID": "PROD_SUS_012",
@@ -167,7 +207,8 @@ products = [
         "image_url": "https://d1ksuy3hfmko20.cloudfront.net/images/chen-co-skf.jpg",
         "image_urls": ["https://d1ksuy3hfmko20.cloudfront.net/images/chen-co-skf.jpg"],
         "description": "Chén cổ bi đũa chịu lực SKF khắc phục triệt để tiếng kêu lộc cộc khi qua ổ gà.",
-        "compatible_models": ["Exciter 150", "Winner X", "Air Blade 125", "SH 150i"]
+        "compatible_models": ["Exciter 150", "Winner X", "Air Blade 125", "SH 150i"],
+        "created_at": "2026-10-25T08:00:00Z"
     },
 
     # --- 4. ĐỘNG CƠ (3 sản phẩm) ---
@@ -183,7 +224,8 @@ products = [
         "image_url": "https://d1ksuy3hfmko20.cloudfront.net/images/loc-gio-k-n.jpg",
         "image_urls": ["https://d1ksuy3hfmko20.cloudfront.net/images/loc-gio-k-n.jpg"],
         "description": "Lọc gió vải tẩm dầu K&N vệ sinh tái sử dụng trọn đời, giúp ga đầu nhẹ và bốc hơn.",
-        "compatible_models": ["Exciter 150", "Winner 150", "Winner X", "Vario 150"]
+        "compatible_models": ["Exciter 150", "Winner 150", "Winner X", "Vario 150"],
+        "created_at": "2026-10-16T08:00:00Z"
     },
     {
         "ProductID": "PROD_ENG_011",
@@ -197,7 +239,8 @@ products = [
         "image_url": "https://d1ksuy3hfmko20.cloudfront.net/images/la-con-fcc.jpg",
         "image_urls": ["https://d1ksuy3hfmko20.cloudfront.net/images/la-con-fcc.jpg"],
         "description": "Bộ 5 lá bố nồi FCC Nhật Bản độ bám cao, sang số nhẹ nhàng, chịu nhiệt dầu máy tốt.",
-        "compatible_models": ["Exciter 150", "Winner 150", "Winner X", "Sonic 150"]
+        "compatible_models": ["Exciter 150", "Winner 150", "Winner X", "Sonic 150"],
+        "created_at": "2026-10-15T08:00:00Z"
     },
     {
         "ProductID": "PROD_ENG_012",
@@ -211,7 +254,8 @@ products = [
         "image_url": "https://d1ksuy3hfmko20.cloudfront.net/images/long-piston-yamaha.jpg",
         "image_urls": ["https://d1ksuy3hfmko20.cloudfront.net/images/long-piston-yamaha.jpg"],
         "description": "Xy-lanh Kiếng DiASil kèm trái piston nén, bạc, ắc, phe cài đồng bộ chính hãng.",
-        "compatible_models": ["Exciter 150", "Exciter 155", "FZ150i"]
+        "compatible_models": ["Exciter 150", "Exciter 155", "FZ150i"],
+        "created_at": "2026-10-14T08:00:00Z"
     },
 
     # --- 5. ĐIỆN - ĐÈN (3 sản phẩm) ---
@@ -227,7 +271,8 @@ products = [
         "image_url": "https://d1ksuy3hfmko20.cloudfront.net/images/bugi-ngk-iridium.jpg",
         "image_urls": ["https://d1ksuy3hfmko20.cloudfront.net/images/bugi-ngk-iridium.jpg"],
         "description": "Đầu điện cực Iridium siêu mảnh 0.6mm đốt sạch nhiên liệu, nhạy nổ máy, tiết kiệm xăng.",
-        "compatible_models": ["Exciter 150", "Winner X", "Air Blade 150", "Vario 150", "SH 150i"]
+        "compatible_models": ["Exciter 150", "Winner X", "Air Blade 150", "Vario 150", "SH 150i"],
+        "created_at": "2026-10-13T08:00:00Z"
     },
     {
         "ProductID": "PROD_ELC_011",
@@ -241,7 +286,8 @@ products = [
         "image_url": "https://d1ksuy3hfmko20.cloudfront.net/images/ac-quy-globe.jpg",
         "image_urls": ["https://d1ksuy3hfmko20.cloudfront.net/images/ac-quy-globe.jpg"],
         "description": "Ắc quy khô kín khí dòng phóng ổn định, chuyên dùng cho xe có hệ thống Idling Stop.",
-        "compatible_models": ["Air Blade 125", "Vision", "Lead 125", "Winner X", "Vario 150"]
+        "compatible_models": ["Air Blade 125", "Vision", "Lead 125", "Winner X", "Vario 150"],
+        "created_at": "2026-10-12T08:00:00Z"
     },
     {
         "ProductID": "PROD_ELC_012",
@@ -255,7 +301,8 @@ products = [
         "image_url": "https://d1ksuy3hfmko20.cloudfront.net/images/den-led-osram.jpg",
         "image_urls": ["https://d1ksuy3hfmko20.cloudfront.net/images/den-led-osram.jpg"],
         "description": "Bóng LED Osram gom sáng chuẩn, không gây chói mắt người đối diện, tiết kiệm điện bình.",
-        "compatible_models": ["Wave RSX", "Sirius", "Future 125", "Exciter 135"]
+        "compatible_models": ["Wave RSX", "Sirius", "Future 125", "Exciter 135"],
+        "created_at": "2026-10-11T08:00:00Z"
     },
 
     # --- 6. NHỚT - LỌC (3 sản phẩm) ---
@@ -271,7 +318,8 @@ products = [
         "image_url": "https://d1ksuy3hfmko20.cloudfront.net/images/motul-300v.jpg",
         "image_urls": ["https://d1ksuy3hfmko20.cloudfront.net/images/motul-300v.jpg"],
         "description": "Nhớt tổng hợp 100% công nghệ Ester Core bảo vệ động cơ tối đa ở vòng tua cao.",
-        "compatible_models": ["Winner 150", "Winner X", "Exciter 150", "Exciter 155", "Sonic 150"]
+        "compatible_models": ["Winner 150", "Winner X", "Exciter 150", "Exciter 155", "Sonic 150"],
+        "created_at": "2026-10-30T08:00:00Z"
     },
     {
         "ProductID": "PROD_OIL_011",
@@ -285,7 +333,8 @@ products = [
         "image_url": "https://d1ksuy3hfmko20.cloudfront.net/images/liqui-moly-scooter.jpg",
         "image_urls": ["https://d1ksuy3hfmko20.cloudfront.net/images/liqui-moly-scooter.jpg"],
         "description": "Nhớt tổng hợp nhập khẩu Đức tích hợp phụ gia chống mài mòn, mát máy cho xe tay ga.",
-        "compatible_models": ["SH 150i", "SH Mode", "Air Blade 150", "Vario 150", "Vision"]
+        "compatible_models": ["SH 150i", "SH Mode", "Air Blade 150", "Vario 150", "Vision"],
+        "created_at": "2026-10-29T08:00:00Z"
     },
     {
         "ProductID": "PROD_OIL_012",
@@ -299,7 +348,8 @@ products = [
         "image_url": "https://d1ksuy3hfmko20.cloudfront.net/images/loc-nhot-kn.jpg",
         "image_urls": ["https://d1ksuy3hfmko20.cloudfront.net/images/loc-nhot-kn.jpg"],
         "description": "Lọc nhớt lưu lượng cao giữ sạch mạt kim loại trong động cơ, bảo vệ bơm nhớt và cam cò.",
-        "compatible_models": ["Exciter 150", "Exciter 155", "FZ150i", "R15 V3"]
+        "compatible_models": ["Exciter 150", "Exciter 155", "FZ150i", "R15 V3"],
+        "created_at": "2026-10-28T08:00:00Z"
     },
 ]
 
@@ -318,22 +368,11 @@ def to_dynamodb_attr(val):
     return {"S": str(val)}
 
 
-if __name__ == "__main__":
-    try:
-        import boto3
-        dynamodb = boto3.resource("dynamodb", region_name="ap-southeast-1")
-        table = dynamodb.Table("Products")
-        for p in products:
-            table.put_item(Item=p)
-            print(f"Đã nạp (boto3): {p['name']}")
-        print(f"Nạp thành công toàn bộ {len(products)} sản phẩm!")
-    except ImportError:
-        print("Đang nạp sản phẩm qua AWS CLI (dynamodb batch-write-item)...")
-        put_requests = [
-            {"PutRequest": {"Item": {k: to_dynamodb_attr(v) for k, v in p.items()}}}
-            for p in products
-        ]
-        payload = {"Products": put_requests}
+def run_batch_write(requests):
+    # DynamoDB batch-write-item tối đa 25 items mỗi lần gọi
+    for i in range(0, len(requests), 25):
+        chunk = requests[i : i + 25]
+        payload = {"Products": chunk}
         with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="ascii") as tmp:
             json.dump(payload, tmp, ensure_ascii=True)
             tmp_path = tmp.name
@@ -351,9 +390,26 @@ if __name__ == "__main__":
                 check=True,
                 shell=(os.name == "nt"),
             )
-            for p in products:
-                print(f"Đã nạp: {p['name']}")
-            print(f"Nạp thành công toàn bộ {len(products)} sản phẩm vào DynamoDB!")
         finally:
             if os.path.exists(tmp_path):
                 os.remove(tmp_path)
+
+
+if __name__ == "__main__":
+    print("1. Dọn các sản phẩm cũ/lỗi ảnh trong DynamoDB...")
+    delete_requests = [
+        {"DeleteRequest": {"Key": {"ProductID": {"S": pid}}}}
+        for pid in OLD_PRODUCT_IDS
+    ]
+    run_batch_write(delete_requests)
+    print(f"Đã xóa {len(OLD_PRODUCT_IDS)} sản phẩm cũ/lỗi ảnh.")
+
+    print("2. Nạp 20 sản phẩm thực tế kèm ảnh S3 thật vào DynamoDB...")
+    put_requests = [
+        {"PutRequest": {"Item": {k: to_dynamodb_attr(v) for k, v in p.items()}}}
+        for p in products
+    ]
+    run_batch_write(put_requests)
+    for p in products:
+        print(f"Đã nạp: {p['ProductID']} - {p['name']} ({p['category']})")
+    print(f"Hoàn tất! Bảng Products hiện có chuẩn {len(products)} sản phẩm thực tế!")

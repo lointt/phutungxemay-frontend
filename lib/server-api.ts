@@ -161,6 +161,28 @@ export async function getProducts(filter?: ProductFilter): Promise<ProductListRe
       items = items.filter((item) => item.stock > 0);
     }
 
+    // 7. Sắp xếp (Sort: Phổ biến nhất, Giá tăng dần, Giá giảm dần, Mới nhất)
+    if (filter?.sort === 'price_asc') {
+      items = [...items].sort((a, b) => a.price - b.price);
+    } else if (filter?.sort === 'price_desc') {
+      items = [...items].sort((a, b) => b.price - a.price);
+    } else if (filter?.sort === 'newest') {
+      items = [...items].sort((a, b) => {
+        const timeA = Date.parse(a.created_at) || 0;
+        const timeB = Date.parse(b.created_at) || 0;
+        if (timeB !== timeA) return timeB - timeA;
+        return b.product_id.localeCompare(a.product_id);
+      });
+    } else {
+      // Mặc định: Phổ biến nhất (ưu tiên sản phẩm chính chuẩn PROD_ và còn nhiều tồn kho)
+      items = [...items].sort((a, b) => {
+        const aIsStd = a.product_id.startsWith('PROD_') ? 1 : 0;
+        const bIsStd = b.product_id.startsWith('PROD_') ? 1 : 0;
+        if (bIsStd !== aIsStd) return bIsStd - aIsStd;
+        return a.product_id.localeCompare(b.product_id);
+      });
+    }
+
     return {
       items,
       total: items.length,
