@@ -8,7 +8,7 @@ import { VehicleSelector } from '@/components/customer/vehicle-selector';
 import { ProductCard, ProductCardSkeleton } from '@/components/customer/product-card';
 import { getFeaturedProducts } from '@/lib/server-api';
 
-export const instant = false;
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Phụ Tùng Xe Máy - Chính Hãng, Giá Tốt, Giao Nhanh',

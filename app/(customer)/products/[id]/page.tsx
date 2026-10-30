@@ -11,7 +11,7 @@ import { formatCurrencyVND, getCategoryLabel, getImageUrl } from '@/lib/utils';
 import { AddToCartSection } from './add-to-cart-section';
 
 // params là runtime data → block prerendering theo Next.js 16 cacheComponents mode
-export const instant = false;
+export const dynamic = 'force-dynamic';
 
 interface Props {
   params: Promise<{ id: string }>;

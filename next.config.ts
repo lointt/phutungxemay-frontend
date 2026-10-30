@@ -8,7 +8,6 @@ if (typeof net.setDefaultAutoSelectFamily === "function") {
 }
 
 const nextConfig: NextConfig = {
-  cacheComponents: true,
   turbopack: {
     rules: {
       "*.css": {
