@@ -11,14 +11,23 @@ import type { Order } from '@/types/order';
 // ─── Category Mapping Helper ──────────────────────────────────────────────────
 export const CATEGORY_MAP: Record<string, string> = {
   brake: 'Hệ thống phanh',
-  transmission: 'Hệ thống truyền động',
-  oil_filter: 'Dầu nhớt & Phụ gia',
-  suspension: 'Giảm xóc sau',
-  fork: 'Hệ thống giảm xóc & Lái',
+  transmission: 'Truyền động',
+  oil_filter: 'Nhớt - Lọc',
+  suspension: 'Giảm xóc',
+  fork: 'Giảm xóc',
   engine: 'Động cơ',
   electrical: 'Điện - Đèn',
   body: 'Nhựa - Tem - Yên xe',
   other: 'Khác',
+};
+
+const CATEGORY_ALIASES: Record<string, string[]> = {
+  'truyền động': ['truyền động', 'hệ thống truyền động'],
+  'động cơ': ['động cơ'],
+  'giảm xóc': ['giảm xóc', 'giảm xóc sau', 'hệ thống giảm xóc & lái', 'phuộc'],
+  'hệ thống phanh': ['hệ thống phanh', 'phanh', 'thắng'],
+  'điện - đèn': ['điện - đèn', 'điện', 'đèn'],
+  'nhớt - lọc': ['nhớt - lọc', 'dầu nhớt & phụ gia', 'nhớt', 'lọc'],
 };
 
 // ─── Normalizer ───────────────────────────────────────────────────────────────
@@ -85,18 +94,20 @@ export async function getProducts(filter?: ProductFilter): Promise<ProductListRe
     const data = (await res.json()) as { items?: Record<string, unknown>[] };
     let items = (data.items ?? []).map(normalizeProduct);
 
-    // 2. Lọc theo category (hỗ trợ cả slug tiếng Anh và tên tiếng Việt)
+    // 2. Lọc theo category (hỗ trợ cả slug tiếng Anh, tên chuẩn 6 danh mục và các biến thể cũ)
     if (filter?.category) {
       const targetCategory = (
         CATEGORY_MAP[filter.category.toLowerCase()] ?? filter.category
       ).toLowerCase();
+      const aliases = CATEGORY_ALIASES[targetCategory] ?? [targetCategory];
 
       items = items.filter((item) => {
         const itemCat = item.category.toLowerCase();
-        return (
-          itemCat === targetCategory ||
-          itemCat.includes(targetCategory) ||
-          targetCategory.includes(itemCat)
+        return aliases.some(
+          (alias) =>
+            itemCat === alias ||
+            itemCat.includes(alias) ||
+            alias.includes(itemCat),
         );
       });
     }

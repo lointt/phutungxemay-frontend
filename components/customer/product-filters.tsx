@@ -6,17 +6,15 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Suspense, useCallback, useState } from 'react';
-import { cn, getCategoryLabel } from '@/lib/utils';
-import type { ProductCategory } from '@/types/product';
+import { cn } from '@/lib/utils';
 
 const CATEGORIES: { value: string; label: string }[] = [
-  { value: 'Hệ thống phanh', label: 'Hệ thống phanh' },
-  { value: 'Hệ thống truyền động', label: 'Hệ thống truyền động' },
-  { value: 'Dầu nhớt & Phụ gia', label: 'Dầu nhớt & Phụ gia' },
-  { value: 'Giảm xóc sau', label: 'Giảm xóc sau' },
-  { value: 'Hệ thống giảm xóc & Lái', label: 'Hệ thống giảm xóc & Lái' },
+  { value: 'Truyền động', label: 'Truyền động' },
   { value: 'Động cơ', label: 'Động cơ' },
+  { value: 'Giảm xóc', label: 'Giảm xóc' },
+  { value: 'Hệ thống phanh', label: 'Hệ thống phanh' },
   { value: 'Điện - Đèn', label: 'Điện - Đèn' },
+  { value: 'Nhớt - Lọc', label: 'Nhớt - Lọc' },
 ];
 
 const PRICE_RANGES = [
@@ -38,7 +36,6 @@ export default function ProductFilters() {
 function ProductFiltersContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [isExpanded, setIsExpanded] = useState(true);
 
   const currentCategory = searchParams.get('category');
   const currentMinPrice = searchParams.get('min_price');

@@ -38,12 +38,12 @@ export function CustomerFooter() {
             <h3 className="font-semibold text-white mb-4">Danh Mục</h3>
             <ul className="space-y-2 text-sm">
               {[
-                { label: 'Động cơ', href: '/products?category=engine' },
-                { label: 'Hệ thống phanh', href: '/products?category=brake' },
-                { label: 'Truyền động', href: '/products?category=transmission' },
-                { label: 'Điện - Đèn', href: '/products?category=electrical' },
-                { label: 'Giảm xóc', href: '/products?category=suspension' },
-                { label: 'Nhớt - Lọc', href: '/products?category=oil_filter' },
+                { label: 'Truyền động', href: `/products?category=${encodeURIComponent('Truyền động')}` },
+                { label: 'Động cơ', href: `/products?category=${encodeURIComponent('Động cơ')}` },
+                { label: 'Giảm xóc', href: `/products?category=${encodeURIComponent('Giảm xóc')}` },
+                { label: 'Hệ thống phanh', href: `/products?category=${encodeURIComponent('Hệ thống phanh')}` },
+                { label: 'Điện - Đèn', href: `/products?category=${encodeURIComponent('Điện - Đèn')}` },
+                { label: 'Nhớt - Lọc', href: `/products?category=${encodeURIComponent('Nhớt - Lọc')}` },
               ].map((item) => (
                 <li key={item.href}>
                   <Link href={item.href} className="hover:text-orange-400 transition-colors">

@@ -13,13 +13,12 @@ import { cn } from '@/lib/utils';
 
 export const HEADER_CATEGORIES = [
   { label: 'Tất cả sản phẩm', value: '' },
-  { label: 'Hệ thống phanh', value: 'Hệ thống phanh' },
-  { label: 'Hệ thống truyền động', value: 'Hệ thống truyền động' },
-  { label: 'Dầu nhớt & Phụ gia', value: 'Dầu nhớt & Phụ gia' },
-  { label: 'Giảm xóc sau', value: 'Giảm xóc sau' },
-  { label: 'Hệ thống giảm xóc & Lái', value: 'Hệ thống giảm xóc & Lái' },
+  { label: 'Truyền động', value: 'Truyền động' },
   { label: 'Động cơ', value: 'Động cơ' },
+  { label: 'Giảm xóc', value: 'Giảm xóc' },
+  { label: 'Hệ thống phanh', value: 'Hệ thống phanh' },
   { label: 'Điện - Đèn', value: 'Điện - Đèn' },
+  { label: 'Nhớt - Lọc', value: 'Nhớt - Lọc' },
 ];
 
 export function CustomerHeader() {

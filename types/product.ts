@@ -7,7 +7,7 @@ export interface Product {
   ProductID?: string;         // Backend DynamoDB field alias
   name: string;               // Tên phụ tùng
   description: string;        // Mô tả chi tiết
-  category: string;           // Danh mục sản phẩm (VD: "Hệ thống phanh", "Dầu nhớt & Phụ gia")
+  category: string;           // Danh mục sản phẩm (VD: "Truyền động", "Động cơ", "Giảm xóc", "Hệ thống phanh", "Điện - Đèn", "Nhớt - Lọc")
   category_key?: ProductCategory; // Alias key dạng slug
   price: number;              // Giá bán (VND, lưu dạng số nguyên)
   stock: number;              // Số lượng tồn kho
@@ -42,12 +42,22 @@ export interface CompatibleVehicle {
   year_to: number;
 }
 
+export const PRODUCT_CATEGORIES = [
+  'Truyền động',
+  'Động cơ',
+  'Giảm xóc',
+  'Hệ thống phanh',
+  'Điện - Đèn',
+  'Nhớt - Lọc',
+] as const;
+
 export type ProductCategory =
-  | 'transmission'    // Hệ thống truyền động
-  | 'brake'           // Phanh
+  | (typeof PRODUCT_CATEGORIES)[number]
+  | 'transmission'    // Truyền động
+  | 'brake'           // Hệ thống phanh
   | 'engine'          // Động cơ
   | 'electrical'      // Điện - Đèn
-  | 'suspension'      // Giảm xóc - Khung sườn
+  | 'suspension'      // Giảm xóc
   | 'body'            // Nhựa - Tem - Yên xe
   | 'oil_filter'      // Nhớt - Lọc
   | 'other'           // Khác
