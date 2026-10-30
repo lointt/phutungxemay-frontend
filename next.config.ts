@@ -1,4 +1,11 @@
+import dns from "node:dns";
+import net from "node:net";
 import type { NextConfig } from "next";
+
+dns.setDefaultResultOrder("ipv4first");
+if (typeof net.setDefaultAutoSelectFamily === "function") {
+  net.setDefaultAutoSelectFamily(false);
+}
 
 const nextConfig: NextConfig = {
   cacheComponents: true,

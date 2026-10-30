@@ -8,7 +8,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { ProductCard } from '@/components/customer/product-card';
+import { ProductCard, ProductCardSkeleton } from '@/components/customer/product-card';
 import { cn, getCategoryLabel } from '@/lib/utils';
 import type { Product } from '@/types/product';
 
@@ -66,6 +66,62 @@ interface ProductsCatalogProps {
 export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
   const searchParams = useSearchParams();
   const searchParamsString = searchParams.toString();
+
+  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [isFetchingClient, setIsFetchingClient] = useState<boolean>(initialProducts.length === 0);
+
+  // Dự phòng: Nếu SSR gặp gián đoạn mạng tạm thời, trình duyệt tự động tải danh sách sản phẩm trực tiếp
+  useEffect(() => {
+    if (initialProducts.length > 0) {
+      setProducts(initialProducts);
+      setIsFetchingClient(false);
+      return;
+    }
+    let cancelled = false;
+    setIsFetchingClient(true);
+    const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://d1ksuy3hfmko20.cloudfront.net';
+    fetch(`${apiBase}/api/products`)
+      .then((r) => r.json())
+      .then((data: { items?: Record<string, unknown>[] }) => {
+        if (cancelled) return;
+        const rawItems = data.items ?? [];
+        const normalized: Product[] = rawItems.map((raw) => {
+          const productId = String(raw.ProductID ?? raw.product_id ?? raw.id ?? '');
+          const rawImage = typeof raw.image_url === 'string' ? raw.image_url : undefined;
+          const rawImages = Array.isArray(raw.image_urls) ? (raw.image_urls as string[]) : [];
+          const imageUrls = rawImages.length > 0 ? rawImages : rawImage ? [rawImage] : [];
+          const rawModels = Array.isArray(raw.compatible_models) ? (raw.compatible_models as string[]) : [];
+          return {
+            product_id: productId,
+            ProductID: productId,
+            name: String(raw.name ?? 'Phụ tùng xe máy'),
+            description: String(raw.description ?? ''),
+            category: String(raw.category ?? 'Khác'),
+            price: Number(raw.price ?? 0),
+            stock: Number(raw.stock ?? 0),
+            image_urls: imageUrls,
+            image_url: imageUrls[0],
+            compatible_vehicles: rawModels.map((m) => ({ brand: '', model: m, year_from: 2015, year_to: 2026 })),
+            compatible_models: rawModels,
+            sku: String(raw.sku ?? productId),
+            brand: String(raw.brand ?? 'Chính hãng'),
+            specs: (raw.specs as Record<string, string>) ?? {},
+            status: String(raw.status ?? 'ACTIVE'),
+            is_active: raw.status !== 'INACTIVE',
+            created_at: String(raw.created_at ?? '2026-01-01T00:00:00.000Z'),
+            updated_at: String(raw.updated_at ?? '2026-01-01T00:00:00.000Z'),
+          };
+        });
+        setProducts(normalized);
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) setIsFetchingClient(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [initialProducts]);
 
   // State bộ lọc phản hồi tức thì
   const [selectedCategory, setSelectedCategory] = useState<string>(
@@ -159,28 +215,28 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
   // Danh sách các thương hiệu phụ tùng hiện có
   const availableBrands = useMemo(() => {
     const set = new Set<string>();
-    for (const p of initialProducts) {
+    for (const p of products) {
       if (p.brand && p.brand.trim()) {
         set.add(p.brand.trim());
       }
     }
     return Array.from(set).sort();
-  }, [initialProducts]);
+  }, [products]);
 
   // Đếm số lượng sản phẩm theo từng danh mục
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const cat of CATEGORIES) {
-      counts[cat.value] = initialProducts.filter((p) =>
+      counts[cat.value] = products.filter((p) =>
         matchesCategory(p.category, cat.value),
       ).length;
     }
     return counts;
-  }, [initialProducts]);
+  }, [products]);
 
   // Lọc và sắp xếp sản phẩm tức thì
   const filteredProducts = useMemo(() => {
-    let list = [...initialProducts];
+    let list = [...products];
 
     // 1. Lọc theo danh mục
     if (selectedCategory) {
@@ -416,7 +472,7 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
                         )}
                       >
                         <span>Tất cả danh mục</span>
-                        <span className="text-xs text-gray-400">{initialProducts.length}</span>
+                        <span className="text-xs text-gray-400">{products.length}</span>
                       </button>
 
                       {CATEGORIES.map((cat) => {
@@ -684,7 +740,13 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
           )}
 
           {/* Grid */}
-          {filteredProducts.length > 0 ? (
+          {isFetchingClient ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <ProductCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : filteredProducts.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
               {filteredProducts.map((product) => (
                 <ProductCard key={product.product_id} product={product} />
@@ -713,3 +775,4 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
     </div>
   );
 }
+

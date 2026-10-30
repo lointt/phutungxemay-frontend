@@ -3,7 +3,18 @@
 // Chuẩn hóa dữ liệu từ backend DynamoDB & hỗ trợ lọc linh hoạt
 // ============================================================
 
+import dns from 'node:dns';
+import net from 'node:net';
+
+dns.setDefaultResultOrder('ipv4first');
+if (typeof net.setDefaultAutoSelectFamily === 'function') {
+  net.setDefaultAutoSelectFamily(false);
+}
+
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://d1ksuy3hfmko20.cloudfront.net';
+
+// Bộ nhớ đệm dự phòng trên Server để chống rớt mạng tạm thời
+let cachedAllProducts: Product[] | null = null;
 
 import type { Product, ProductListResponse, ProductFilter, CompatibleVehicle } from '@/types/product';
 import type { Order } from '@/types/order';
@@ -123,17 +134,28 @@ export function normalizeProduct(raw: Record<string, unknown>): Product {
  */
 export async function getProducts(filter?: ProductFilter): Promise<ProductListResponse> {
   try {
-    // 1. Gọi backend API (không dùng cache để tồn kho luôn chính xác từ DynamoDB)
-    const res = await fetch(`${API_BASE}/api/products`, {
-      cache: 'no-store',
-    });
+    let items: Product[] = [];
 
-    if (!res.ok) {
-      return { items: [], total: 0, page: 1, page_size: 20, has_next: false };
+    try {
+      const res = await fetch(`${API_BASE}/api/products`, {
+        next: { revalidate: 15 },
+      });
+
+      if (res.ok) {
+        const data = (await res.json()) as { items?: Record<string, unknown>[] };
+        const normalized = (data.items ?? []).map(normalizeProduct);
+        if (normalized.length > 0) {
+          cachedAllProducts = normalized;
+          items = [...normalized];
+        }
+      }
+    } catch {
+      // Sử dụng dữ liệu cache gần nhất nếu kết nối tạm thời gián đoạn
     }
 
-    const data = (await res.json()) as { items?: Record<string, unknown>[] };
-    let items = (data.items ?? []).map(normalizeProduct);
+    if (items.length === 0 && cachedAllProducts && cachedAllProducts.length > 0) {
+      items = [...cachedAllProducts];
+    }
 
     // 2. Lọc theo category (hỗ trợ cả slug tiếng Anh, tên chuẩn 6 danh mục và các biến thể cũ)
     if (filter?.category) {
@@ -249,15 +271,15 @@ export async function getFeaturedProducts(): Promise<Product[]> {
  */
 export async function getProductById(id: string): Promise<Product | null> {
   try {
+    const all = await getProducts();
+    const found = all.items.find((p) => p.product_id === id || p.ProductID === id);
+    if (found) return found;
+
     const res = await fetch(`${API_BASE}/api/products/${id}`, {
-      cache: 'no-store',
+      next: { revalidate: 15 },
     });
 
-    if (!res.ok) {
-      // Fallback: tìm trong danh sách products nếu direct ID bị lệch
-      const all = await getProducts();
-      return all.items.find((p) => p.product_id === id || p.ProductID === id) ?? null;
-    }
+    if (!res.ok) return null;
 
     const raw = (await res.json()) as Record<string, unknown>;
     return normalizeProduct(raw);
