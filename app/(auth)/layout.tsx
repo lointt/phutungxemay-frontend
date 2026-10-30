@@ -25,9 +25,12 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         {/* Logo */}
         <div className="text-center mb-8">
           <a href="/" className="inline-flex items-center gap-3 group">
-            <div className="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center shadow-lg group-hover:bg-orange-400 transition-colors">
-              <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+            <div className="w-12 h-12 bg-gradient-to-tr from-orange-600 via-orange-500 to-amber-500 rounded-xl flex items-center justify-center shadow-lg shadow-orange-500/30 group-hover:scale-105 transition-transform">
+              <svg className="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="8" strokeWidth={2} strokeDasharray="3 2" />
+                <circle cx="12" cy="12" r="5" strokeWidth={1.75} />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.5 15.5L14.5 9.5M13 8l3 3" />
+                <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none" />
               </svg>
             </div>
             <div className="text-left">

@@ -12,10 +12,10 @@ export const instant = false;
 
 export const metadata: Metadata = {
   title: 'Phụ Tùng Xe Máy - Chính Hãng, Giá Tốt, Giao Nhanh',
-  description: 'Mua phụ tùng xe máy chính hãng giá tốt nhất. Tư vấn kỹ thuật bởi Kỹ Sư AI 24/7. Giao hàng toàn quốc nhanh chóng.',
+  description: 'Mua phụ tùng xe máy chính hãng giá tốt nhất. Tư vấn kỹ thuật trực tuyến 24/7. Giao hàng toàn quốc nhanh chóng.',
   openGraph: {
     title: 'Phụ Tùng Xe Máy - Chính Hãng, Giá Tốt, Giao Nhanh',
-    description: 'Mua phụ tùng xe máy chính hãng giá tốt nhất. Tư vấn kỹ thuật bởi Kỹ Sư AI 24/7.',
+    description: 'Mua phụ tùng xe máy chính hãng giá tốt nhất. Tư vấn kỹ thuật trực tuyến 24/7.',
     type: 'website',
   },
 };
@@ -38,7 +38,7 @@ export default async function HomePage() {
             <div>
               <div className="inline-flex items-center gap-2 bg-orange-500/20 border border-orange-500/30 rounded-full px-3 py-1 text-xs sm:text-sm text-orange-300 mb-5 sm:mb-6">
                 <span className="w-2 h-2 bg-orange-400 rounded-full animate-pulse" />
-                Kỹ Sư AI tư vấn 24/7
+                Hỗ trợ tư vấn 24/7
               </div>
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight mb-5 sm:mb-6">
                 Phụ Tùng{' '}
@@ -47,7 +47,7 @@ export default async function HomePage() {
                 Giá Tốt Nhất
               </h1>
               <p className="text-slate-300 text-base sm:text-lg mb-7 sm:mb-8 leading-relaxed">
-                Hơn 10.000 phụ tùng xe máy các loại. Tư vấn miễn phí bởi Kỹ Sư AI — chẩn đoán bệnh xe, gợi ý linh kiện phù hợp.
+                Hơn 10.000 phụ tùng xe máy các loại. Tư vấn miễn phí trực tuyến 24/7 — chẩn đoán bệnh xe, gợi ý linh kiện phù hợp.
               </p>
               <div className="flex flex-wrap gap-3">
                 <Link
@@ -76,14 +76,30 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* Hero illustration */}
+            {/* Hero Logo & Emblem Illustration */}
             <div className="hidden md:flex justify-center">
-              <div className="relative w-80 h-80">
-                <div className="absolute inset-0 bg-orange-500/20 rounded-full blur-2xl" />
-                <div className="relative w-full h-full flex items-center justify-center">
-                  <svg className="w-48 h-48 text-orange-400/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={0.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                  </svg>
+              <div className="relative w-80 h-80 flex items-center justify-center">
+                <div className="absolute inset-0 bg-gradient-to-tr from-orange-500/30 via-amber-500/15 to-transparent rounded-full blur-3xl" />
+                <div className="relative w-64 h-64 rounded-3xl bg-white/5 backdrop-blur-md border border-white/15 shadow-2xl flex flex-col items-center justify-center p-6">
+                  <div className="w-28 h-28 rounded-2xl bg-gradient-to-tr from-orange-600 via-orange-500 to-amber-500 flex items-center justify-center shadow-xl shadow-orange-500/30 mb-4">
+                    <svg className="w-16 h-16 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <circle cx="12" cy="12" r="8.5" strokeWidth={1.8} strokeDasharray="3 2" />
+                      <circle cx="12" cy="12" r="5.5" strokeWidth={1.6} />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.5 15.5L14.5 9.5M13 8l3 3" />
+                      <circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none" />
+                    </svg>
+                  </div>
+                  <p className="text-white font-extrabold text-xl tracking-wide">PHỤ TÙNG XE MÁY</p>
+                  <p className="text-orange-300 text-xs font-medium mt-1">CHÍNH HÃNG • UY TÍN • GIÁ TỐT</p>
+                  <div className="flex items-center gap-2 mt-3 px-3 py-1 rounded-full bg-white/10 text-[11px] text-slate-200">
+                    <span>⚙️ DID</span>
+                    <span>•</span>
+                    <span>🛢️ Motul</span>
+                    <span>•</span>
+                    <span>🛠️ YSS</span>
+                    <span>•</span>
+                    <span>🛑 Brembo</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -103,7 +119,7 @@ export default async function HomePage() {
             { icon: '🏷️', title: 'Chính hãng 100%', desc: 'Cam kết hàng chính hãng, có bảo hành' },
             { icon: '🚀', title: 'Giao hàng nhanh', desc: 'GHN/GHTK, giao trong 2-3 ngày' },
             { icon: '🔄', title: 'Đổi trả 7 ngày', desc: 'Hoàn tiền nếu hàng lỗi do NSX' },
-            { icon: '🤖', title: 'AI tư vấn 24/7', desc: 'Kỹ Sư AI chẩn đoán bệnh xe miễn phí' },
+            { icon: '🤖', title: 'Tư vấn AI 24/7', desc: 'Trợ lý AI chẩn đoán bệnh xe miễn phí' },
           ].map((f) => (
             <div key={f.title} className="flex flex-col items-center text-center p-4 sm:p-5 bg-white rounded-xl border border-gray-100 hover:border-orange-200 hover:shadow-md transition-all">
               <span className="text-2xl sm:text-3xl mb-2.5 sm:mb-3">{f.icon}</span>

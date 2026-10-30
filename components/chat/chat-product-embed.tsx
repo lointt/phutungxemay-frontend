@@ -65,7 +65,7 @@ export function ChatProductEmbed({ product }: ChatProductEmbedProps) {
         {/* Info */}
         <div className="flex-1 min-w-0">
           <span className="text-[10px] font-bold text-orange-600 uppercase tracking-wider block">
-            ⭐ Gợi ý từ Kỹ Sư AI
+            ⭐ Gợi ý từ Trợ lý AI
           </span>
           <Link
             href={`/products/${product.product_id}`}

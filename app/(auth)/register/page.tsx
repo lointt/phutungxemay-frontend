@@ -99,7 +99,7 @@ export default function RegisterPage() {
     <>
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-white">Tạo tài khoản</h1>
-        <p className="text-slate-300 text-sm mt-1">Đăng ký để mua sắm và nhận tư vấn từ Kỹ Sư AI.</p>
+        <p className="text-slate-300 text-sm mt-1">Đăng ký để mua sắm và nhận tư vấn phụ tùng 24/7.</p>
       </div>
 
       {error && (

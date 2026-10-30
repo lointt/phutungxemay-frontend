@@ -100,7 +100,7 @@ export function ChatWindow({ onClose, isStandalone = false, initialPrompt }: Cha
           </div>
 
           <div className="min-w-0">
-            <h3 className="font-bold text-sm leading-tight truncate">Kỹ Sư AI Phụ Tùng</h3>
+            <h3 className="font-bold text-sm leading-tight truncate">Trợ Lý AI Phụ Tùng</h3>
             <div className="flex items-center gap-1.5 text-[10px] text-orange-100">
               <span className="truncate">
                 {isOnline
@@ -163,7 +163,7 @@ export function ChatWindow({ onClose, isStandalone = false, initialPrompt }: Cha
           <div className="flex gap-2 items-center text-xs text-orange-600 bg-orange-50/80 p-3 rounded-2xl w-fit max-w-full border border-orange-100 animate-pulse my-2">
             <div className="w-2 h-2 rounded-full bg-orange-500 animate-ping flex-shrink-0" />
             <span className="font-semibold text-[11px]">
-              Kỹ Sư AI đang chẩn đoán và tra cứu phụ tùng...
+              Trợ lý AI đang chẩn đoán và tra cứu phụ tùng...
             </span>
           </div>
         )}
