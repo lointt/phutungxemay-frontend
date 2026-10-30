@@ -12,13 +12,20 @@ export function CustomerFooter() {
 
           {/* Brand */}
           <div className="md:col-span-1">
-            <div className="flex items-center gap-2.5 mb-4">
+            <div className="flex items-center gap-3 mb-4">
               <img
-                src="/brand-logo.png"
+                src="/brand-logo.png?v=2"
                 alt="Phụ Tùng Xe Máy"
-                className="w-10 h-10 rounded-xl object-cover shadow-md shadow-orange-500/20"
+                className="w-11 h-11 rounded-xl object-cover shadow-md shadow-orange-500/25 ring-1 ring-orange-500/30"
               />
-              <span className="font-bold text-white text-lg">Phụ Tùng Xe Máy</span>
+              <div>
+                <span className="font-extrabold text-white text-base tracking-tight block leading-tight">
+                  PHỤ TÙNG <span className="text-orange-400">XE MÁY</span>
+                </span>
+                <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest">
+                  Genuine Parts Store
+                </span>
+              </div>
             </div>
             <p className="text-sm text-gray-400 leading-relaxed">
               Chuyên phụ tùng xe máy chính hãng. Tư vấn kỹ thuật trực tuyến 24/7. Giao hàng toàn quốc.

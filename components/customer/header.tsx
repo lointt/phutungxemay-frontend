@@ -81,14 +81,18 @@ export function CustomerHeader() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group">
             <img
-              src="/brand-logo.png"
+              src="/brand-logo.png?v=2"
               alt="Phụ Tùng Xe Máy"
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl object-cover shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform"
+              className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl object-cover shadow-md shadow-orange-500/25 ring-1 ring-orange-500/30 group-hover:scale-105 transition-transform"
             />
-            <span className="font-bold text-gray-900 text-xs sm:text-sm leading-tight whitespace-nowrap">
-              Phụ Tùng<br />
-              <span className="text-orange-500">Xe Máy</span>
-            </span>
+            <div className="flex flex-col leading-none whitespace-nowrap">
+              <span className="font-extrabold text-gray-900 text-xs sm:text-sm tracking-tight">
+                PHỤ TÙNG <span className="text-orange-500">XE MÁY</span>
+              </span>
+              <span className="text-[10px] font-semibold text-gray-400 tracking-wider uppercase mt-0.5">
+                Chính hãng 100%
+              </span>
+            </div>
           </Link>
 
           {/* Category Dropdown (Desktop) */}

@@ -26,13 +26,15 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         <div className="text-center mb-8">
           <a href="/" className="inline-flex items-center gap-3 group">
             <img
-              src="/brand-logo.png"
+              src="/brand-logo.png?v=2"
               alt="Phụ Tùng Xe Máy"
-              className="w-12 h-12 rounded-xl object-cover shadow-lg shadow-orange-500/30 group-hover:scale-105 transition-transform"
+              className="w-12 h-12 rounded-xl object-cover shadow-lg shadow-orange-500/30 ring-1 ring-orange-500/40 group-hover:scale-105 transition-transform"
             />
             <div className="text-left">
-              <p className="text-white font-bold text-xl leading-tight">Phụ Tùng Xe Máy</p>
-              <p className="text-orange-300 text-xs">phutungxemay.store</p>
+              <p className="text-white font-extrabold text-xl leading-tight tracking-tight">
+                PHỤ TÙNG <span className="text-orange-400">XE MÁY</span>
+              </p>
+              <p className="text-orange-300/90 text-xs font-medium">phutungxemay.store</p>
             </div>
           </a>
         </div>
