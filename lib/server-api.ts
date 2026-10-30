@@ -34,6 +34,47 @@ const CATEGORY_ALIASES: Record<string, string[]> = {
 
 // ─── Normalizer ───────────────────────────────────────────────────────────────
 
+function inferVehicleBrand(modelStr: string): { brand: string; model: string } {
+  const m = modelStr.trim();
+  const lower = m.toLowerCase();
+  if (lower.startsWith('yamaha ') || lower.startsWith('honda ') || lower.startsWith('suzuki ') || lower.startsWith('sym ')) {
+    const parts = m.split(' ');
+    return { brand: parts[0], model: parts.slice(1).join(' ') };
+  }
+  if (
+    lower.includes('exciter') ||
+    lower.includes('sirius') ||
+    lower.includes('jupiter') ||
+    lower.includes('nvx') ||
+    lower.includes('grande') ||
+    lower.includes('fz150') ||
+    lower.includes('r15') ||
+    lower.includes('mt-15')
+  ) {
+    return { brand: 'Yamaha', model: m };
+  }
+  if (
+    lower.includes('winner') ||
+    lower.includes('wave') ||
+    lower.includes('future') ||
+    lower.includes('air blade') ||
+    lower.includes('vario') ||
+    lower.includes('vision') ||
+    lower.includes('sh') ||
+    lower.includes('lead') ||
+    lower.includes('sonic') ||
+    lower.includes('pcx') ||
+    lower.includes('cb150') ||
+    lower.includes('adv')
+  ) {
+    return { brand: 'Honda', model: m };
+  }
+  if (lower.includes('raider') || lower.includes('satria') || lower.includes('gsx') || lower.includes('address')) {
+    return { brand: 'Suzuki', model: m };
+  }
+  return { brand: 'Honda', model: m };
+}
+
 export function normalizeProduct(raw: Record<string, unknown>): Product {
   const productId = String(raw.ProductID ?? raw.product_id ?? raw.id ?? '');
   const rawImage = typeof raw.image_url === 'string' ? raw.image_url : undefined;
@@ -49,10 +90,8 @@ export function normalizeProduct(raw: Record<string, unknown>): Product {
   const compatibleVehicles: CompatibleVehicle[] = Array.isArray(raw.compatible_vehicles)
     ? (raw.compatible_vehicles as CompatibleVehicle[])
     : rawModels.map((m) => {
-        const parts = m.split(' ');
-        const brand = parts[0] ?? '';
-        const model = parts.slice(1).join(' ');
-        return { brand, model, year_from: 2015, year_to: 2024 };
+        const { brand, model } = inferVehicleBrand(m);
+        return { brand, model, year_from: 2015, year_to: 2026 };
       });
 
   return {
