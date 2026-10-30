@@ -83,9 +83,11 @@ export function ChatWindow({ onClose, isStandalone = false, initialPrompt }: Cha
       <div className="bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 text-white p-3 sm:p-4 flex items-center justify-between shadow-sm flex-shrink-0">
         <div className="flex items-center gap-2.5 min-w-0">
           <div className="relative flex-shrink-0">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-base sm:text-lg font-bold shadow-inner">
-              🤖
-            </div>
+            <img
+              src="/chatbot-avatar.png"
+              alt="Trợ lý tư vấn"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover border-2 border-white/80 shadow-sm"
+            />
             {/* Status dot */}
             <span
               className={cn(

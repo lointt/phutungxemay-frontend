@@ -24,16 +24,17 @@ export function ChatMessage({ message }: ChatMessageProps) {
       )}
     >
       {/* Avatar */}
-      <div
-        className={cn(
-          'w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[11px] sm:text-xs font-bold flex-shrink-0 shadow-sm',
-          isUser
-            ? 'bg-gray-800 text-white'
-            : 'bg-gradient-to-tr from-orange-500 to-amber-500 text-white',
-        )}
-      >
-        {isUser ? 'Bạn' : 'AI'}
-      </div>
+      {isUser ? (
+        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[11px] sm:text-xs font-bold flex-shrink-0 shadow-sm bg-gray-800 text-white">
+          Bạn
+        </div>
+      ) : (
+        <img
+          src="/chatbot-avatar.png"
+          alt="Trợ lý AI"
+          className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover flex-shrink-0 shadow-sm border border-gray-200"
+        />
+      )}
 
       {/* Message Content */}
       <div
