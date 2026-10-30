@@ -48,22 +48,22 @@ export interface QuickPrompt {
 export const DEFAULT_QUICK_PROMPTS: QuickPrompt[] = [
   {
     id: 'qp-1',
-    label: '🔊 Kêu cụp cụp',
+    label: 'Cổ xe kêu cụp cụp',
     message: 'Xe qua gờ giảm tốc kêu cụp cụp là bị gì? Cách sửa như thế nào?',
   },
   {
     id: 'qp-2',
-    label: '🛢️ Tư vấn nhớt',
+    label: 'Tư vấn dầu nhớt',
     message: 'Tư vấn nhớt máy phù hợp cho xe đi phượt đường dài',
   },
   {
     id: 'qp-3',
-    label: '🔧 Bảo dưỡng định kỳ',
+    label: 'Bảo dưỡng định kỳ',
     message: 'Xe máy nên bảo dưỡng định kỳ những gì và bao lâu một lần?',
   },
   {
     id: 'qp-4',
-    label: '💡 Đèn yếu',
+    label: 'Đèn pha sáng yếu',
     message: 'Đèn xe máy bị yếu, tối hơn bình thường là do đâu?',
   },
 ];

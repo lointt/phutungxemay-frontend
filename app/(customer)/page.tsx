@@ -87,14 +87,10 @@ export default async function HomePage() {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
-                {/* Floating badges */}
+                {/* Floating badge */}
                 <div className="absolute -bottom-3 -left-4 bg-slate-900/90 backdrop-blur-md border border-orange-500/30 rounded-2xl px-4 py-2.5 shadow-xl flex items-center gap-2.5">
                   <span className="w-2.5 h-2.5 rounded-full bg-green-400 animate-pulse" />
                   <span className="text-xs font-bold text-white tracking-wide">Chính Hãng 100%</span>
-                </div>
-                <div className="absolute -top-3 -right-4 bg-slate-900/90 backdrop-blur-md border border-orange-500/30 rounded-2xl px-4 py-2.5 shadow-xl flex items-center gap-2">
-                  <span className="text-orange-400 text-sm">⚡</span>
-                  <span className="text-xs font-bold text-orange-300 tracking-wide">Chuẩn Zin Từng Đời Xe</span>
                 </div>
               </div>
             </div>
