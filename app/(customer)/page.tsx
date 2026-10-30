@@ -7,7 +7,6 @@ import Link from 'next/link';
 import { VehicleSelector } from '@/components/customer/vehicle-selector';
 import { ProductCard, ProductCardSkeleton } from '@/components/customer/product-card';
 import { getFeaturedProducts } from '@/lib/server-api';
-import { Suspense } from 'react';
 
 export const instant = false;
 
@@ -34,20 +33,20 @@ export default async function HomePage() {
           <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2" />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-24">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="inline-flex items-center gap-2 bg-orange-500/20 border border-orange-500/30 rounded-full px-3 py-1 text-sm text-orange-300 mb-6">
+              <div className="inline-flex items-center gap-2 bg-orange-500/20 border border-orange-500/30 rounded-full px-3 py-1 text-xs sm:text-sm text-orange-300 mb-5 sm:mb-6">
                 <span className="w-2 h-2 bg-orange-400 rounded-full animate-pulse" />
                 Kỹ Sư AI tư vấn 24/7
               </div>
-              <h1 className="text-4xl md:text-5xl font-extrabold leading-tight mb-6">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight mb-5 sm:mb-6">
                 Phụ Tùng{' '}
-                <span className="text-orange-400">Chính Hãng</span>
+                <span className="text-orange-400 whitespace-nowrap">Chính Hãng</span>
                 <br />
                 Giá Tốt Nhất
               </h1>
-              <p className="text-slate-300 text-lg mb-8 leading-relaxed">
+              <p className="text-slate-300 text-base sm:text-lg mb-7 sm:mb-8 leading-relaxed">
                 Hơn 10.000 phụ tùng xe máy các loại. Tư vấn miễn phí bởi Kỹ Sư AI — chẩn đoán bệnh xe, gợi ý linh kiện phù hợp.
               </p>
               <div className="flex flex-wrap gap-3">
@@ -63,15 +62,15 @@ export default async function HomePage() {
               </div>
 
               {/* Stats */}
-              <div className="flex gap-8 mt-10 pt-8 border-t border-white/10">
+              <div className="flex gap-6 sm:gap-8 mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-white/10">
                 {[
                   { value: '10.000+', label: 'Sản phẩm' },
                   { value: '50.000+', label: 'Khách hàng' },
                   { value: '4.9 ⭐', label: 'Đánh giá' },
                 ].map((stat) => (
                   <div key={stat.label}>
-                    <p className="text-2xl font-bold text-white">{stat.value}</p>
-                    <p className="text-sm text-slate-400">{stat.label}</p>
+                    <p className="text-xl sm:text-2xl font-bold text-white">{stat.value}</p>
+                    <p className="text-xs sm:text-sm text-slate-400">{stat.label}</p>
                   </div>
                 ))}
               </div>
@@ -93,34 +92,34 @@ export default async function HomePage() {
       </section>
 
       {/* ── Vehicle Selector ────────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10">
+      <section className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 -mt-6 relative z-10">
         <VehicleSelector />
       </section>
 
       {/* ── Features ────────────────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <section className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
           {[
             { icon: '🏷️', title: 'Chính hãng 100%', desc: 'Cam kết hàng chính hãng, có bảo hành' },
             { icon: '🚀', title: 'Giao hàng nhanh', desc: 'GHN/GHTK, giao trong 2-3 ngày' },
             { icon: '🔄', title: 'Đổi trả 7 ngày', desc: 'Hoàn tiền nếu hàng lỗi do NSX' },
             { icon: '🤖', title: 'AI tư vấn 24/7', desc: 'Kỹ Sư AI chẩn đoán bệnh xe miễn phí' },
           ].map((f) => (
-            <div key={f.title} className="flex flex-col items-center text-center p-5 bg-white rounded-xl border border-gray-100 hover:border-orange-200 hover:shadow-md transition-all">
-              <span className="text-3xl mb-3">{f.icon}</span>
-              <h3 className="font-semibold text-gray-800 text-sm mb-1">{f.title}</h3>
-              <p className="text-xs text-gray-500 leading-relaxed">{f.desc}</p>
+            <div key={f.title} className="flex flex-col items-center text-center p-4 sm:p-5 bg-white rounded-xl border border-gray-100 hover:border-orange-200 hover:shadow-md transition-all">
+              <span className="text-2xl sm:text-3xl mb-2.5 sm:mb-3">{f.icon}</span>
+              <h3 className="font-semibold text-gray-800 text-xs sm:text-sm mb-1">{f.title}</h3>
+              <p className="text-[11px] sm:text-xs text-gray-500 leading-relaxed">{f.desc}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* ── Featured Products ────────────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      <section className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Sản phẩm nổi bật</h2>
-            <p className="text-gray-500 text-sm mt-1">Phụ tùng được mua nhiều nhất</p>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Sản phẩm nổi bật</h2>
+            <p className="text-gray-500 text-xs sm:text-sm mt-1">Phụ tùng được mua nhiều nhất</p>
           </div>
           <Link
             href="/products"
@@ -134,14 +133,14 @@ export default async function HomePage() {
         </div>
 
         {featuredProducts.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-4">
             {featuredProducts.map((product) => (
               <ProductCard key={product.product_id} product={product} />
             ))}
           </div>
         ) : (
           /* Skeleton khi chưa có data từ API (dev/staging) */
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3 sm:gap-4">
             {Array.from({ length: 6 }).map((_, i) => (
               <ProductCardSkeleton key={i} />
             ))}

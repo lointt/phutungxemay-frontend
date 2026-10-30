@@ -36,9 +36,11 @@ export function ChatWindow({ onClose, isStandalone = false, initialPrompt }: Cha
     scrollToBottom();
   }, [messages, isThinking]);
 
-  // Focus ô nhập khi mở
+  // Chỉ tự động focus ô nhập trên màn hình máy tính để tránh tự bật bàn phím / zoom trên điện thoại
   useEffect(() => {
-    inputRef.current?.focus();
+    if (typeof window !== 'undefined' && window.innerWidth >= 640) {
+      inputRef.current?.focus();
+    }
   }, []);
 
   // Tự động gửi câu hỏi khởi động nếu có
@@ -74,14 +76,14 @@ export function ChatWindow({ onClose, isStandalone = false, initialPrompt }: Cha
         'flex flex-col bg-slate-50 overflow-hidden transition-all',
         isStandalone
           ? 'w-full h-full rounded-2xl border border-gray-200 shadow-sm'
-          : 'w-[calc(100vw-32px)] max-w-[420px] h-[560px] max-h-[82vh] rounded-3xl border border-gray-200 fixed bottom-20 right-4 sm:right-6 z-50 shadow-2xl animate-in fade-in slide-in-from-bottom-5 duration-200',
+          : 'fixed inset-x-3 bottom-3 top-[68px] sm:inset-auto sm:bottom-6 sm:right-6 sm:w-[400px] sm:h-[560px] sm:max-h-[calc(100dvh-48px)] rounded-2xl sm:rounded-3xl border border-gray-200 z-[60] shadow-2xl animate-in fade-in slide-in-from-bottom-5 duration-200',
       )}
     >
       {/* ── Chat Header ─────────────────────────────────────────────────────── */}
-      <div className="bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 text-white p-3.5 sm:p-4 flex items-center justify-between shadow-sm flex-shrink-0">
-        <div className="flex items-center gap-2.5">
-          <div className="relative">
-            <div className="w-9 h-9 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-lg font-bold shadow-inner">
+      <div className="bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 text-white p-3 sm:p-4 flex items-center justify-between shadow-sm flex-shrink-0">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <div className="relative flex-shrink-0">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-base sm:text-lg font-bold shadow-inner">
               🤖
             </div>
             {/* Status dot */}
@@ -97,10 +99,10 @@ export function ChatWindow({ onClose, isStandalone = false, initialPrompt }: Cha
             />
           </div>
 
-          <div>
-            <h3 className="font-bold text-sm leading-tight">Kỹ Sư AI Phụ Tùng</h3>
+          <div className="min-w-0">
+            <h3 className="font-bold text-sm leading-tight truncate">Kỹ Sư AI Phụ Tùng</h3>
             <div className="flex items-center gap-1.5 text-[10px] text-orange-100">
-              <span>
+              <span className="truncate">
                 {isOnline
                   ? 'Trực tuyến 24/7'
                   : isConnecting
@@ -113,7 +115,7 @@ export function ChatWindow({ onClose, isStandalone = false, initialPrompt }: Cha
                 <button
                   type="button"
                   onClick={reconnect}
-                  className="underline hover:text-white font-bold ml-1 cursor-pointer"
+                  className="underline hover:text-white font-bold ml-1 cursor-pointer flex-shrink-0"
                 >
                   Kết nối lại
                 </button>
@@ -123,7 +125,7 @@ export function ChatWindow({ onClose, isStandalone = false, initialPrompt }: Cha
         </div>
 
         {/* Header Actions */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 flex-shrink-0">
           <button
             type="button"
             onClick={clearChat}
@@ -151,15 +153,15 @@ export function ChatWindow({ onClose, isStandalone = false, initialPrompt }: Cha
       </div>
 
       {/* ── Messages List ───────────────────────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-2">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-4 space-y-2">
         {messages.map((msg) => (
           <ChatMessage key={msg.id} message={msg} />
         ))}
 
         {/* AI Typing Indicator */}
         {isThinking && (
-          <div className="flex gap-2 items-center text-xs text-orange-600 bg-orange-50/80 p-3 rounded-2xl w-fit border border-orange-100 animate-pulse my-2">
-            <div className="w-2 h-2 rounded-full bg-orange-500 animate-ping" />
+          <div className="flex gap-2 items-center text-xs text-orange-600 bg-orange-50/80 p-3 rounded-2xl w-fit max-w-full border border-orange-100 animate-pulse my-2">
+            <div className="w-2 h-2 rounded-full bg-orange-500 animate-ping flex-shrink-0" />
             <span className="font-semibold text-[11px]">
               Kỹ Sư AI đang chẩn đoán và tra cứu phụ tùng...
             </span>
@@ -170,19 +172,19 @@ export function ChatWindow({ onClose, isStandalone = false, initialPrompt }: Cha
       </div>
 
       {/* ── Quick Prompts ───────────────────────────────────────────────────── */}
-      <div className="bg-white/90 border-t border-gray-100 px-3 py-1 flex-shrink-0">
+      <div className="bg-white/90 border-t border-gray-100 px-2.5 sm:px-3 py-1 flex-shrink-0">
         <QuickPrompts onSelectPrompt={handleSelectPrompt} disabled={isThinking} />
       </div>
 
       {/* ── Input Box Form ──────────────────────────────────────────────────── */}
-      <form onSubmit={handleSend} className="p-3 bg-white border-t border-gray-200 flex items-center gap-2 flex-shrink-0">
+      <form onSubmit={handleSend} className="p-2.5 sm:p-3 bg-white border-t border-gray-200 flex items-center gap-2 flex-shrink-0">
         <input
           ref={inputRef}
           type="text"
           placeholder="Mô tả triệu chứng xe hoặc hỏi phụ tùng..."
           value={inputVal}
           onChange={(e) => setInputVal(e.target.value)}
-          className="flex-1 px-3.5 py-2.5 bg-gray-100/80 border border-transparent rounded-xl text-xs text-gray-800 placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-300 transition-all"
+          className="flex-1 min-w-0 px-3 sm:px-3.5 py-2 sm:py-2.5 bg-gray-100/80 border border-transparent rounded-xl text-base sm:text-xs text-gray-800 placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-300 transition-all"
         />
 
         <button

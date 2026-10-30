@@ -19,14 +19,14 @@ export function ChatMessage({ message }: ChatMessageProps) {
   return (
     <div
       className={cn(
-        'flex gap-2.5 my-3 animate-in fade-in slide-in-from-bottom-2 duration-200',
+        'flex gap-2 sm:gap-2.5 my-2.5 sm:my-3 w-full min-w-0 animate-in fade-in slide-in-from-bottom-2 duration-200',
         isUser ? 'flex-row-reverse' : 'flex-row',
       )}
     >
       {/* Avatar */}
       <div
         className={cn(
-          'w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 shadow-sm',
+          'w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[11px] sm:text-xs font-bold flex-shrink-0 shadow-sm',
           isUser
             ? 'bg-gray-800 text-white'
             : 'bg-gradient-to-tr from-orange-500 to-amber-500 text-white',
@@ -38,13 +38,13 @@ export function ChatMessage({ message }: ChatMessageProps) {
       {/* Message Content */}
       <div
         className={cn(
-          'max-w-[85%] rounded-2xl px-4 py-3 text-xs leading-relaxed shadow-sm',
+          'min-w-0 max-w-[85%] rounded-2xl px-3.5 py-2.5 sm:px-4 sm:py-3 text-xs leading-relaxed shadow-sm break-words overflow-hidden',
           isUser
             ? 'bg-orange-500 text-white rounded-tr-sm'
             : 'bg-white text-gray-800 border border-gray-100 rounded-tl-sm shadow-gray-200/50',
         )}
       >
-        <div className="space-y-1.5 whitespace-pre-wrap font-sans">
+        <div className="space-y-1.5 whitespace-pre-wrap break-words font-sans">
           {renderMarkdownContent(message.content, isUser)}
         </div>
 
@@ -96,11 +96,11 @@ function renderMarkdownContent(text: string, isUser: boolean) {
     if (line.trim().startsWith('- ') || line.trim().startsWith('* ')) {
       const content = line.trim().substring(2);
       return (
-        <div key={idx} className="flex items-start gap-1.5 pl-1 my-0.5">
-          <span className={cn('text-xs mt-0.5', isUser ? 'text-orange-200' : 'text-orange-500')}>
+        <div key={idx} className="flex items-start gap-1.5 pl-1 my-0.5 min-w-0">
+          <span className={cn('text-xs mt-0.5 flex-shrink-0', isUser ? 'text-orange-200' : 'text-orange-500')}>
             •
           </span>
-          <span>{renderInlineFormatting(content)}</span>
+          <span className="min-w-0 break-words">{renderInlineFormatting(content)}</span>
         </div>
       );
     }
@@ -109,11 +109,11 @@ function renderMarkdownContent(text: string, isUser: boolean) {
     const numMatch = line.trim().match(/^(\d+)\.\s+(.*)/);
     if (numMatch) {
       return (
-        <div key={idx} className="flex items-start gap-1.5 pl-1 my-0.5">
-          <span className={cn('font-bold text-[10px] mt-0.5', isUser ? 'text-orange-200' : 'text-orange-500')}>
+        <div key={idx} className="flex items-start gap-1.5 pl-1 my-0.5 min-w-0">
+          <span className={cn('font-bold text-[10px] mt-0.5 flex-shrink-0', isUser ? 'text-orange-200' : 'text-orange-500')}>
             {numMatch[1]}.
           </span>
-          <span>{renderInlineFormatting(numMatch[2])}</span>
+          <span className="min-w-0 break-words">{renderInlineFormatting(numMatch[2])}</span>
         </div>
       );
     }
@@ -124,7 +124,7 @@ function renderMarkdownContent(text: string, isUser: boolean) {
     }
 
     // Đoạn văn thường
-    return <p key={idx}>{renderInlineFormatting(line)}</p>;
+    return <p key={idx} className="break-words">{renderInlineFormatting(line)}</p>;
   });
 }
 
