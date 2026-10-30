@@ -44,6 +44,8 @@ export function CustomerFooter() {
                 { label: 'Hệ thống phanh', href: `/products?category=${encodeURIComponent('Hệ thống phanh')}` },
                 { label: 'Điện - Đèn', href: `/products?category=${encodeURIComponent('Điện - Đèn')}` },
                 { label: 'Nhớt - Lọc', href: `/products?category=${encodeURIComponent('Nhớt - Lọc')}` },
+                { label: 'Lốp - Vỏ xe', href: `/products?category=${encodeURIComponent('Lốp - Vỏ xe')}` },
+                { label: 'Phụ kiện - Pô xe', href: `/products?category=${encodeURIComponent('Phụ kiện - Pô xe')}` },
               ].map((item) => (
                 <li key={item.href}>
                   <Link href={item.href} className="hover:text-orange-400 transition-colors">

@@ -15,6 +15,8 @@ const CATEGORIES: { value: string; label: string }[] = [
   { value: 'Hệ thống phanh', label: 'Hệ thống phanh' },
   { value: 'Điện - Đèn', label: 'Điện - Đèn' },
   { value: 'Nhớt - Lọc', label: 'Nhớt - Lọc' },
+  { value: 'Lốp - Vỏ xe', label: 'Lốp - Vỏ xe' },
+  { value: 'Phụ kiện - Pô xe', label: 'Phụ kiện - Pô xe' },
 ];
 
 const PRICE_RANGES = [

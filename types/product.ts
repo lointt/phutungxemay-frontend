@@ -49,6 +49,8 @@ export const PRODUCT_CATEGORIES = [
   'Hệ thống phanh',
   'Điện - Đèn',
   'Nhớt - Lọc',
+  'Lốp - Vỏ xe',
+  'Phụ kiện - Pô xe',
 ] as const;
 
 export type ProductCategory =

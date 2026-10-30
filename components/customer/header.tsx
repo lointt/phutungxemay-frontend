@@ -19,6 +19,8 @@ export const HEADER_CATEGORIES = [
   { label: 'Hệ thống phanh', value: 'Hệ thống phanh' },
   { label: 'Điện - Đèn', value: 'Điện - Đèn' },
   { label: 'Nhớt - Lọc', value: 'Nhớt - Lọc' },
+  { label: 'Lốp - Vỏ xe', value: 'Lốp - Vỏ xe' },
+  { label: 'Phụ kiện - Pô xe', value: 'Phụ kiện - Pô xe' },
 ];
 
 export function CustomerHeader() {

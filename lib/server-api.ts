@@ -28,6 +28,8 @@ const CATEGORY_ALIASES: Record<string, string[]> = {
   'hệ thống phanh': ['hệ thống phanh', 'phanh', 'thắng'],
   'điện - đèn': ['điện - đèn', 'điện', 'đèn'],
   'nhớt - lọc': ['nhớt - lọc', 'dầu nhớt & phụ gia', 'nhớt', 'lọc'],
+  'lốp - vỏ xe': ['lốp - vỏ xe', 'lốp', 'vỏ xe'],
+  'phụ kiện - pô xe': ['phụ kiện - pô xe', 'phụ kiện', 'pô xe', 'dàn áo'],
 };
 
 // ─── Normalizer ───────────────────────────────────────────────────────────────
