@@ -13,14 +13,11 @@ export function CustomerFooter() {
           {/* Brand */}
           <div className="md:col-span-1">
             <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-9 h-9 bg-gradient-to-tr from-orange-600 to-amber-500 rounded-xl flex items-center justify-center shadow-md shadow-orange-500/20">
-                <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <circle cx="12" cy="12" r="8" strokeWidth={2} strokeDasharray="3 2" />
-                  <circle cx="12" cy="12" r="5" strokeWidth={1.75} />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.5 15.5L14.5 9.5M13 8l3 3" />
-                  <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none" />
-                </svg>
-              </div>
+              <img
+                src="/brand-logo.png"
+                alt="Phụ Tùng Xe Máy"
+                className="w-10 h-10 rounded-xl object-cover shadow-md shadow-orange-500/20"
+              />
               <span className="font-bold text-white text-lg">Phụ Tùng Xe Máy</span>
             </div>
             <p className="text-sm text-gray-400 leading-relaxed">

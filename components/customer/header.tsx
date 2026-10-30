@@ -78,14 +78,11 @@ export function CustomerHeader() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 flex-shrink-0 group">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-tr from-orange-600 via-orange-500 to-amber-500 rounded-xl flex items-center justify-center shadow-md shadow-orange-500/25 group-hover:scale-105 transition-transform">
-              <svg className="w-6 h-6 sm:w-6 sm:h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <circle cx="12" cy="12" r="8" strokeWidth={2} strokeDasharray="3 2" />
-                <circle cx="12" cy="12" r="5" strokeWidth={1.75} />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.5 15.5L14.5 9.5M13 8l3 3" />
-                <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none" />
-              </svg>
-            </div>
+            <img
+              src="/brand-logo.png"
+              alt="Phụ Tùng Xe Máy"
+              className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl object-cover shadow-md shadow-orange-500/20 group-hover:scale-105 transition-transform"
+            />
             <span className="font-bold text-gray-900 text-xs sm:text-sm leading-tight whitespace-nowrap">
               Phụ Tùng<br />
               <span className="text-orange-500">Xe Máy</span>

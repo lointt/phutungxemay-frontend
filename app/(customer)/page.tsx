@@ -78,28 +78,14 @@ export default async function HomePage() {
 
             {/* Hero Logo & Emblem Illustration */}
             <div className="hidden md:flex justify-center">
-              <div className="relative w-80 h-80 flex items-center justify-center">
-                <div className="absolute inset-0 bg-gradient-to-tr from-orange-500/30 via-amber-500/15 to-transparent rounded-full blur-3xl" />
-                <div className="relative w-64 h-64 rounded-3xl bg-white/5 backdrop-blur-md border border-white/15 shadow-2xl flex flex-col items-center justify-center p-6">
-                  <div className="w-28 h-28 rounded-2xl bg-gradient-to-tr from-orange-600 via-orange-500 to-amber-500 flex items-center justify-center shadow-xl shadow-orange-500/30 mb-4">
-                    <svg className="w-16 h-16 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                      <circle cx="12" cy="12" r="8.5" strokeWidth={1.8} strokeDasharray="3 2" />
-                      <circle cx="12" cy="12" r="5.5" strokeWidth={1.6} />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.5 15.5L14.5 9.5M13 8l3 3" />
-                      <circle cx="12" cy="12" r="2.2" fill="currentColor" stroke="none" />
-                    </svg>
-                  </div>
-                  <p className="text-white font-extrabold text-xl tracking-wide">PHỤ TÙNG XE MÁY</p>
-                  <p className="text-orange-300 text-xs font-medium mt-1">CHÍNH HÃNG • UY TÍN • GIÁ TỐT</p>
-                  <div className="flex items-center gap-2 mt-3 px-3 py-1 rounded-full bg-white/10 text-[11px] text-slate-200">
-                    <span>⚙️ DID</span>
-                    <span>•</span>
-                    <span>🛢️ Motul</span>
-                    <span>•</span>
-                    <span>🛠️ YSS</span>
-                    <span>•</span>
-                    <span>🛑 Brembo</span>
-                  </div>
+              <div className="relative w-80 h-80 lg:w-96 lg:h-96 flex items-center justify-center">
+                <div className="absolute inset-0 bg-gradient-to-tr from-orange-500/35 via-amber-500/20 to-transparent rounded-full blur-3xl" />
+                <div className="relative w-72 h-72 lg:w-80 lg:h-80 rounded-3xl overflow-hidden border-2 border-orange-500/30 shadow-2xl shadow-orange-950/60 group">
+                  <img
+                    src="/brand-logo.png"
+                    alt="Phụ Tùng Xe Máy Chính Hãng"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
                 </div>
               </div>
             </div>
