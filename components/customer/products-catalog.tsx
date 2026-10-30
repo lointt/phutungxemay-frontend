@@ -2,8 +2,7 @@
 
 // ============================================================
 // components/customer/products-catalog.tsx
-// Quản lý toàn bộ bộ lọc (Lọc sản phẩm) + Giao diện Popup tích chọn
-// Hỗ trợ tích chọn nhiều Danh mục, Thương hiệu, Dòng xe, Khoảng giá
+// Hệ thống lọc & sắp xếp sản phẩm chuyên nghiệp (Sidebar + Filter Modal)
 // ============================================================
 
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -12,15 +11,15 @@ import { ProductCard, ProductCardSkeleton } from '@/components/customer/product-
 import { cn, formatCurrencyVND, getCategoryLabel } from '@/lib/utils';
 import type { Product } from '@/types/product';
 
-const CATEGORIES: { value: string; label: string; icon: string }[] = [
-  { value: 'Truyền động', label: 'Truyền động', icon: '⚙️' },
-  { value: 'Động cơ', label: 'Động cơ', icon: '🔧' },
-  { value: 'Giảm xóc', label: 'Giảm xóc', icon: '🔩' },
-  { value: 'Hệ thống phanh', label: 'Hệ thống phanh', icon: '🛑' },
-  { value: 'Điện - Đèn', label: 'Điện - Đèn', icon: '💡' },
-  { value: 'Nhớt - Lọc', label: 'Nhớt - Lọc', icon: '🛢️' },
-  { value: 'Lốp - Vỏ xe', label: 'Lốp - Vỏ xe', icon: '🛞' },
-  { value: 'Phụ kiện - Pô xe', label: 'Phụ kiện - Pô xe', icon: '🏍️' },
+const CATEGORIES: { value: string; label: string }[] = [
+  { value: 'Truyền động', label: 'Truyền động' },
+  { value: 'Động cơ', label: 'Động cơ' },
+  { value: 'Giảm xóc', label: 'Giảm xóc' },
+  { value: 'Hệ thống phanh', label: 'Hệ thống phanh' },
+  { value: 'Điện - Đèn', label: 'Điện - Đèn' },
+  { value: 'Nhớt - Lọc', label: 'Nhớt - Lọc' },
+  { value: 'Lốp - Vỏ xe', label: 'Lốp - Vỏ xe' },
+  { value: 'Phụ kiện - Pô xe', label: 'Phụ kiện - Pô xe' },
 ];
 
 const POPULAR_MODELS: { label: string; value: string }[] = [
@@ -79,6 +78,27 @@ function parseCsvParam(raw: string | null): string[] {
     .filter(Boolean);
 }
 
+// Custom Checkbox UI chuyên nghiệp
+function CheckBoxIndicator({ checked, roundedFull = false }: { checked: boolean; roundedFull?: boolean }) {
+  return (
+    <span
+      className={cn(
+        'w-4 h-4 flex items-center justify-center border transition-all flex-shrink-0',
+        roundedFull ? 'rounded-full' : 'rounded-[5px]',
+        checked
+          ? 'bg-orange-500 border-orange-500 text-white shadow-2xs'
+          : 'bg-white border-gray-300 group-hover:border-orange-400',
+      )}
+    >
+      {checked && (
+        <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+        </svg>
+      )}
+    </span>
+  );
+}
+
 interface ProductsCatalogProps {
   initialProducts: Product[];
 }
@@ -89,8 +109,6 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
 
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [isFetchingClient, setIsFetchingClient] = useState<boolean>(initialProducts.length === 0);
-
-  // Mở/đóng giao diện Popup tích chọn lọc sản phẩm khi ấn vào "Lọc sản phẩm"
   const [isFilterModalOpen, setIsFilterModalOpen] = useState<boolean>(false);
 
   const lastExternalQueryRef = useRef<string>(searchParamsString);
@@ -149,7 +167,7 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
     };
   }, [initialProducts]);
 
-  // State tích chọn nhiều tiêu chí (Multi-select checkboxes)
+  // State bộ lọc
   const [selectedCategories, setSelectedCategories] = useState<string[]>(() =>
     parseCsvParam(searchParams.get('category')).map((c) => getCategoryLabel(c)),
   );
@@ -184,14 +202,13 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
     () => searchParams.get('sort') ?? 'popular',
   );
 
-  // Trạng thái đóng/mở các nhóm lọc trong sidebar
+  // Trạng thái đóng/mở các nhóm trong sidebar
   const [openCatSection, setOpenCatSection] = useState(true);
   const [openVehicleSection, setOpenVehicleSection] = useState(true);
   const [openPriceSection, setOpenPriceSection] = useState(true);
   const [openBrandSection, setOpenBrandSection] = useState(true);
   const [openStockSection, setOpenStockSection] = useState(true);
 
-  // Đóng modal khi nhấn phím Escape
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') setIsFilterModalOpen(false);
@@ -202,7 +219,7 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isFilterModalOpen]);
 
-  // Đồng bộ từ URL khi người dùng chọn Danh mục hoặc Tìm kiếm từ thanh Header / Footer / VehicleSelector
+  // Đồng bộ từ URL khi người dùng điều hướng từ Header / Footer / VehicleSelector
   useEffect(() => {
     if (isInternalUpdateRef.current) {
       isInternalUpdateRef.current = false;
@@ -229,7 +246,6 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
     setSortBy(params.get('sort') ?? 'popular');
   }, [searchParamsString]);
 
-  // Đồng bộ ngược lại lên thanh địa chỉ URL
   function syncUrl(next: {
     categories?: string[];
     brands?: string[];
@@ -270,7 +286,6 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
     window.history.replaceState(window.history.state, '', newUrl);
   }
 
-  // Danh sách các thương hiệu phụ tùng hiện có kèm số lượng
   const availableBrands = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const p of products) {
@@ -284,7 +299,6 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
       .map(([name, count]) => ({ name, count }));
   }, [products]);
 
-  // Đếm số lượng sản phẩm theo từng danh mục
   const categoryCounts = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const cat of CATEGORIES) {
@@ -295,7 +309,6 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
     return counts;
   }, [products]);
 
-  // Đếm số lượng sản phẩm theo từng dòng xe phổ biến
   const modelCounts = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const m of POPULAR_MODELS) {
@@ -311,18 +324,15 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
     return counts;
   }, [products]);
 
-  // Lọc và sắp xếp sản phẩm tức thì theo các ô đã tích chọn
   const filteredProducts = useMemo(() => {
     let list = [...products];
 
-    // 1. Lọc theo danh sách Danh mục đã tích chọn
     if (selectedCategories.length > 0) {
       list = list.filter((item) =>
         selectedCategories.some((cat) => matchesCategory(item.category, cat)),
       );
     }
 
-    // 2. Lọc theo từ khóa tìm kiếm
     if (searchQuery.trim()) {
       const kw = searchQuery.trim().toLowerCase();
       list = list.filter((item) => {
@@ -336,13 +346,11 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
       });
     }
 
-    // 3. Lọc theo danh sách Thương hiệu đã tích chọn
     if (selectedBrands.length > 0) {
       const lowerBrands = selectedBrands.map((b) => b.toLowerCase());
       list = list.filter((item) => lowerBrands.includes(item.brand.toLowerCase()));
     }
 
-    // 4. Lọc theo hãng xe & danh sách Dòng xe đã tích chọn
     if (compatibleBrand) {
       const cb = compatibleBrand.toLowerCase();
       list = list.filter(
@@ -366,7 +374,6 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
       );
     }
 
-    // 5. Lọc theo khoảng giá
     if (minPrice !== undefined) {
       list = list.filter((item) => item.price >= minPrice);
     }
@@ -374,12 +381,10 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
       list = list.filter((item) => item.price <= maxPrice);
     }
 
-    // 6. Lọc chỉ còn hàng
     if (inStockOnly) {
       list = list.filter((item) => item.stock > 0);
     }
 
-    // 7. Sắp xếp
     if (sortBy === 'price_asc') {
       list.sort((a, b) => a.price - b.price);
     } else if (sortBy === 'price_desc') {
@@ -408,8 +413,6 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
     inStockOnly,
     sortBy,
   ]);
-
-  // ── Các hàm xử lý tích chọn (Toggle Checkboxes) ─────────────────────────────
 
   function handleToggleCategory(cat: string) {
     if (!cat) {
@@ -508,7 +511,7 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
     : selectedCategories.length === 1
       ? getCategoryLabel(selectedCategories[0])
       : selectedCategories.length > 1
-        ? `Đang lọc ${selectedCategories.length} danh mục`
+        ? `Phụ tùng đã chọn (${selectedCategories.length} danh mục)`
         : 'Tất cả sản phẩm';
 
   return (
@@ -523,23 +526,23 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
       </nav>
 
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* ── Sidebar: Lọc sản phẩm (tích chọn trực tiếp hoặc bấm mở bảng tích chọn lớn) ── */}
-        <aside className="lg:w-72 flex-shrink-0">
-          <div className="lg:sticky lg:top-20 bg-white rounded-2xl border border-gray-200 p-4 shadow-sm">
-            {/* Nút Phễu Lọc sản phẩm — Ấn vào mở ngay Giao diện tích chọn lọc sản phẩm */}
-            <div className="flex items-center justify-between gap-2 pb-3 border-b border-gray-100">
+        {/* ── Sidebar: Bộ lọc sản phẩm ────────────────────────────────────── */}
+        <aside className="lg:w-68 flex-shrink-0">
+          <div className="lg:sticky lg:top-20 bg-white rounded-2xl border border-gray-200/90 p-4 shadow-xs">
+            {/* Header Lọc sản phẩm — Bấm mở bảng lọc nâng cao */}
+            <div className="flex items-center justify-between gap-2 pb-3.5 border-b border-gray-100">
               <button
                 type="button"
                 onClick={() => setIsFilterModalOpen(true)}
-                className="flex-1 flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold shadow-md shadow-orange-500/20 transition-all cursor-pointer active:scale-[0.99]"
+                className="flex items-center gap-2.5 text-gray-900 hover:text-orange-600 transition-colors cursor-pointer group"
               >
-                <span className="flex items-center gap-2">
+                <span className="w-8 h-8 rounded-xl bg-orange-50 group-hover:bg-orange-500 text-orange-500 group-hover:text-white flex items-center justify-center transition-all shadow-2xs">
                   <svg
-                    className="w-4 h-4 text-white flex-shrink-0"
+                    className="w-4 h-4 flex-shrink-0"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
-                    strokeWidth={2.2}
+                    strokeWidth={2}
                   >
                     <path
                       strokeLinecap="round"
@@ -547,38 +550,47 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
                       d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
                     />
                   </svg>
-                  <span className="text-sm">Lọc sản phẩm</span>
                 </span>
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-semibold bg-white/20 rounded-lg">
-                  {activeFilterCount > 0 ? `Đã chọn ${activeFilterCount}` : 'Mở bảng chọn'}
-                </span>
+                <span className="font-bold text-sm sm:text-base tracking-tight">Lọc sản phẩm</span>
+                {activeFilterCount > 0 && (
+                  <span className="px-2 py-0.5 text-[11px] font-bold bg-orange-500 text-white rounded-full">
+                    {activeFilterCount}
+                  </span>
+                )}
               </button>
 
-              {hasActiveFilters && (
+              {hasActiveFilters ? (
                 <button
                   type="button"
                   onClick={handleClearAllFilters}
-                  title="Bỏ tích chọn tất cả"
-                  className="px-2.5 py-2.5 text-xs text-orange-600 hover:text-orange-700 bg-orange-50 hover:bg-orange-100 rounded-xl font-semibold transition-colors cursor-pointer flex-shrink-0"
+                  className="text-xs text-orange-600 hover:text-orange-700 font-semibold transition-colors cursor-pointer"
                 >
                   Đặt lại
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setIsFilterModalOpen(true)}
+                  className="text-xs text-gray-400 hover:text-orange-500 font-medium transition-colors cursor-pointer"
+                >
+                  Mở rộng
                 </button>
               )}
             </div>
 
-            {/* Danh sách tích chọn nhanh ngay trên Sidebar */}
-            <div className="mt-2">
-              {/* 1. Tích chọn Danh mục */}
-              <div className="pt-2">
+            {/* Danh sách tiêu chí lọc bên trái */}
+            <div className="mt-1">
+              {/* 1. Danh mục */}
+              <div className="pt-3">
                 <button
                   type="button"
                   onClick={() => setOpenCatSection((v) => !v)}
-                  className="flex items-center justify-between w-full mb-2 text-sm font-semibold text-gray-800 cursor-pointer"
+                  className="flex items-center justify-between w-full mb-2 text-xs font-bold uppercase tracking-wider text-gray-500 cursor-pointer"
                 >
-                  <span>Danh mục phụ tùng</span>
+                  <span>Danh mục</span>
                   <svg
                     className={cn(
-                      'w-4 h-4 text-gray-400 transition-transform',
+                      'w-3.5 h-3.5 text-gray-400 transition-transform',
                       openCatSection && 'rotate-180',
                     )}
                     fill="none"
@@ -591,78 +603,68 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
                 </button>
 
                 {openCatSection && (
-                  <div className="space-y-1">
-                    <label
+                  <div className="space-y-0.5">
+                    <button
+                      type="button"
+                      onClick={() => handleToggleCategory('')}
                       className={cn(
-                        'flex items-center justify-between px-2.5 py-2 text-sm rounded-lg transition-colors cursor-pointer',
+                        'group w-full flex items-center justify-between px-2.5 py-2 text-sm rounded-xl transition-all cursor-pointer',
                         selectedCategories.length === 0
-                          ? 'bg-orange-50 text-orange-700 font-semibold'
+                          ? 'bg-orange-50/80 text-orange-600 font-semibold'
                           : 'text-gray-700 hover:bg-gray-50',
                       )}
                     >
                       <span className="flex items-center gap-2.5">
-                        <input
-                          type="checkbox"
-                          checked={selectedCategories.length === 0}
-                          onChange={() => handleToggleCategory('')}
-                          className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-400 cursor-pointer accent-orange-500"
-                        />
+                        <CheckBoxIndicator checked={selectedCategories.length === 0} />
                         <span>Tất cả danh mục</span>
                       </span>
-                      <span className="text-xs text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded">
-                        {products.length}
-                      </span>
-                    </label>
+                      <span className="text-xs text-gray-400 font-medium">{products.length}</span>
+                    </button>
 
                     {CATEGORIES.map((cat) => {
                       const isChecked = selectedCategories.includes(cat.value);
                       return (
-                        <label
+                        <button
                           key={cat.value}
+                          type="button"
+                          onClick={() => handleToggleCategory(cat.value)}
                           className={cn(
-                            'flex items-center justify-between px-2.5 py-2 text-sm rounded-lg transition-colors cursor-pointer',
+                            'group w-full flex items-center justify-between px-2.5 py-2 text-sm rounded-xl transition-all cursor-pointer',
                             isChecked
-                              ? 'bg-orange-50 text-orange-700 font-semibold'
+                              ? 'bg-orange-50/80 text-orange-600 font-semibold'
                               : 'text-gray-700 hover:bg-gray-50',
                           )}
                         >
                           <span className="flex items-center gap-2.5">
-                            <input
-                              type="checkbox"
-                              checked={isChecked}
-                              onChange={() => handleToggleCategory(cat.value)}
-                              className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-400 cursor-pointer accent-orange-500"
-                            />
+                            <CheckBoxIndicator checked={isChecked} />
                             <span>{cat.label}</span>
                           </span>
                           <span
                             className={cn(
-                              'text-xs px-1.5 py-0.5 rounded',
-                              isChecked
-                                ? 'bg-orange-500 text-white font-bold'
-                                : 'text-gray-400 bg-gray-100',
+                              'text-xs font-medium',
+                              isChecked ? 'text-orange-600' : 'text-gray-400',
                             )}
                           >
                             {categoryCounts[cat.value] ?? 0}
                           </span>
-                        </label>
+                        </button>
                       );
                     })}
                   </div>
                 )}
               </div>
 
-              {/* 2. Tích chọn Dòng xe tương thích */}
+              {/* 2. Dòng xe */}
               <div className="border-t border-gray-100 pt-3.5 mt-3.5">
                 <button
                   type="button"
                   onClick={() => setOpenVehicleSection((v) => !v)}
-                  className="flex items-center justify-between w-full mb-2 text-sm font-semibold text-gray-800 cursor-pointer"
+                  className="flex items-center justify-between w-full mb-2 text-xs font-bold uppercase tracking-wider text-gray-500 cursor-pointer"
                 >
-                  <span>Dòng xe tương thích</span>
+                  <span>Dòng xe</span>
                   <svg
                     className={cn(
-                      'w-4 h-4 text-gray-400 transition-transform',
+                      'w-3.5 h-3.5 text-gray-400 transition-transform',
                       openVehicleSection && 'rotate-180',
                     )}
                     fill="none"
@@ -675,49 +677,44 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
                 </button>
 
                 {openVehicleSection && (
-                  <div className="space-y-1 max-h-52 overflow-y-auto pr-1">
+                  <div className="space-y-0.5 max-h-52 overflow-y-auto pr-1">
                     {POPULAR_MODELS.map((m) => {
                       const isChecked = selectedModels.includes(m.value);
                       return (
-                        <label
+                        <button
                           key={m.value}
+                          type="button"
+                          onClick={() => handleToggleModel(m.value)}
                           className={cn(
-                            'flex items-center justify-between px-2.5 py-1.5 text-sm rounded-lg transition-colors cursor-pointer',
+                            'group w-full flex items-center justify-between px-2.5 py-1.5 text-sm rounded-xl transition-all cursor-pointer',
                             isChecked
-                              ? 'bg-orange-50 text-orange-700 font-semibold'
+                              ? 'bg-orange-50/80 text-orange-600 font-semibold'
                               : 'text-gray-700 hover:bg-gray-50',
                           )}
                         >
-                          <span className="flex items-center gap-2.5">
-                            <input
-                              type="checkbox"
-                              checked={isChecked}
-                              onChange={() => handleToggleModel(m.value)}
-                              className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-400 cursor-pointer accent-orange-500"
-                            />
-                            <span className="text-xs sm:text-sm">{m.label}</span>
+                          <span className="flex items-center gap-2.5 truncate">
+                            <CheckBoxIndicator checked={isChecked} />
+                            <span className="truncate">{m.label}</span>
                           </span>
-                          <span className="text-xs text-gray-400">
-                            {modelCounts[m.value] ?? 0}
-                          </span>
-                        </label>
+                          <span className="text-xs text-gray-400">{modelCounts[m.value] ?? 0}</span>
+                        </button>
                       );
                     })}
                   </div>
                 )}
               </div>
 
-              {/* 3. Tích chọn Khoảng giá */}
+              {/* 3. Khoảng giá */}
               <div className="border-t border-gray-100 pt-3.5 mt-3.5">
                 <button
                   type="button"
                   onClick={() => setOpenPriceSection((v) => !v)}
-                  className="flex items-center justify-between w-full mb-2 text-sm font-semibold text-gray-800 cursor-pointer"
+                  className="flex items-center justify-between w-full mb-2 text-xs font-bold uppercase tracking-wider text-gray-500 cursor-pointer"
                 >
                   <span>Khoảng giá</span>
                   <svg
                     className={cn(
-                      'w-4 h-4 text-gray-400 transition-transform',
+                      'w-3.5 h-3.5 text-gray-400 transition-transform',
                       openPriceSection && 'rotate-180',
                     )}
                     fill="none"
@@ -730,48 +727,45 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
                 </button>
 
                 {openPriceSection && (
-                  <div className="space-y-1">
+                  <div className="space-y-0.5">
                     {PRICE_RANGES.map((range) => {
                       const isChecked = minPrice === range.min && maxPrice === range.max;
                       return (
-                        <label
+                        <button
                           key={range.label}
-                          className={cn(
-                            'flex items-center gap-2.5 px-2.5 py-2 text-sm rounded-lg transition-colors cursor-pointer',
+                          type="button"
+                          onClick={() =>
                             isChecked
-                              ? 'bg-orange-50 text-orange-700 font-semibold'
+                              ? handleSelectPriceRange(undefined, undefined)
+                              : handleSelectPriceRange(range.min, range.max)
+                          }
+                          className={cn(
+                            'group w-full flex items-center gap-2.5 px-2.5 py-2 text-sm rounded-xl transition-all cursor-pointer',
+                            isChecked
+                              ? 'bg-orange-50/80 text-orange-600 font-semibold'
                               : 'text-gray-700 hover:bg-gray-50',
                           )}
                         >
-                          <input
-                            type="checkbox"
-                            checked={isChecked}
-                            onChange={() =>
-                              isChecked
-                                ? handleSelectPriceRange(undefined, undefined)
-                                : handleSelectPriceRange(range.min, range.max)
-                            }
-                            className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-400 cursor-pointer accent-orange-500"
-                          />
+                          <CheckBoxIndicator checked={isChecked} roundedFull />
                           <span>{range.label}</span>
-                        </label>
+                        </button>
                       );
                     })}
                   </div>
                 )}
               </div>
 
-              {/* 4. Tích chọn Thương hiệu */}
+              {/* 4. Thương hiệu */}
               <div className="border-t border-gray-100 pt-3.5 mt-3.5">
                 <button
                   type="button"
                   onClick={() => setOpenBrandSection((v) => !v)}
-                  className="flex items-center justify-between w-full mb-2 text-sm font-semibold text-gray-800 cursor-pointer"
+                  className="flex items-center justify-between w-full mb-2.5 text-xs font-bold uppercase tracking-wider text-gray-500 cursor-pointer"
                 >
                   <span>Thương hiệu</span>
                   <svg
                     className={cn(
-                      'w-4 h-4 text-gray-400 transition-transform',
+                      'w-3.5 h-3.5 text-gray-400 transition-transform',
                       openBrandSection && 'rotate-180',
                     )}
                     fill="none"
@@ -784,27 +778,23 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
                 </button>
 
                 {openBrandSection && (
-                  <div className="grid grid-cols-2 gap-1.5 max-h-52 overflow-y-auto pr-1">
+                  <div className="flex flex-wrap gap-1.5">
                     {availableBrands.map((b) => {
                       const isChecked = selectedBrands.includes(b.name);
                       return (
-                        <label
+                        <button
                           key={b.name}
+                          type="button"
+                          onClick={() => handleToggleBrand(b.name)}
                           className={cn(
-                            'flex items-center gap-2 px-2 py-1.5 text-xs rounded-lg border transition-all cursor-pointer',
+                            'px-2.5 py-1.5 text-xs rounded-lg border transition-all cursor-pointer',
                             isChecked
-                              ? 'bg-orange-50 text-orange-700 border-orange-300 font-semibold'
-                              : 'bg-gray-50/70 text-gray-700 border-gray-200 hover:border-orange-300',
+                              ? 'bg-orange-500 text-white border-orange-500 font-semibold shadow-2xs'
+                              : 'bg-gray-50/80 text-gray-700 border-gray-200 hover:border-orange-300 hover:text-orange-600',
                           )}
                         >
-                          <input
-                            type="checkbox"
-                            checked={isChecked}
-                            onChange={() => handleToggleBrand(b.name)}
-                            className="w-3.5 h-3.5 text-orange-500 border-gray-300 rounded focus:ring-orange-400 cursor-pointer accent-orange-500"
-                          />
-                          <span className="truncate">{b.name}</span>
-                        </label>
+                          {b.name}
+                        </button>
                       );
                     })}
                   </div>
@@ -816,12 +806,12 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
                 <button
                   type="button"
                   onClick={() => setOpenStockSection((v) => !v)}
-                  className="flex items-center justify-between w-full mb-2 text-sm font-semibold text-gray-800 cursor-pointer"
+                  className="flex items-center justify-between w-full mb-2 text-xs font-bold uppercase tracking-wider text-gray-500 cursor-pointer"
                 >
                   <span>Tình trạng</span>
                   <svg
                     className={cn(
-                      'w-4 h-4 text-gray-400 transition-transform',
+                      'w-3.5 h-3.5 text-gray-400 transition-transform',
                       openStockSection && 'rotate-180',
                     )}
                     fill="none"
@@ -834,15 +824,19 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
                 </button>
 
                 {openStockSection && (
-                  <label className="flex items-center gap-2.5 px-2.5 py-2 cursor-pointer hover:bg-gray-50 rounded-lg transition-colors">
-                    <input
-                      type="checkbox"
-                      checked={inStockOnly}
-                      onChange={(e) => handleToggleInStock(e.target.checked)}
-                      className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-400 cursor-pointer accent-orange-500"
-                    />
-                    <span className="text-sm text-gray-700">Chỉ hiện sản phẩm còn hàng</span>
-                  </label>
+                  <button
+                    type="button"
+                    onClick={() => handleToggleInStock(!inStockOnly)}
+                    className={cn(
+                      'group w-full flex items-center gap-2.5 px-2.5 py-2 text-sm rounded-xl transition-all cursor-pointer',
+                      inStockOnly
+                        ? 'bg-orange-50/80 text-orange-600 font-semibold'
+                        : 'text-gray-700 hover:bg-gray-50',
+                    )}
+                  >
+                    <CheckBoxIndicator checked={inStockOnly} />
+                    <span>Chỉ hiện hàng có sẵn</span>
+                  </button>
                 )}
               </div>
             </div>
@@ -863,14 +857,19 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
             </div>
 
             <div className="flex items-center gap-2.5">
-              {/* Nút mở nhanh Bảng tích chọn lọc sản phẩm */}
+              {/* Nút Bộ lọc mở Modal chuyên nghiệp */}
               <button
                 type="button"
                 onClick={() => setIsFilterModalOpen(true)}
-                className="inline-flex items-center gap-2 px-3.5 py-2 text-sm font-semibold rounded-xl border border-orange-200 bg-orange-50 text-orange-600 hover:bg-orange-500 hover:text-white transition-all cursor-pointer shadow-xs"
+                className={cn(
+                  'inline-flex items-center gap-2 px-3.5 py-2 text-sm font-medium rounded-xl border transition-all cursor-pointer',
+                  activeFilterCount > 0
+                    ? 'border-orange-500 bg-orange-50 text-orange-600 font-semibold'
+                    : 'border-gray-200 bg-white text-gray-700 hover:border-orange-300 hover:text-orange-600',
+                )}
               >
                 <svg
-                  className="w-4 h-4"
+                  className="w-4 h-4 text-orange-500"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -882,7 +881,7 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
                     d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
                   />
                 </svg>
-                <span>Bộ lọc tích chọn</span>
+                <span>Bộ lọc</span>
                 {activeFilterCount > 0 && (
                   <span className="px-1.5 py-0.2 bg-orange-500 text-white text-xs rounded-full font-bold">
                     {activeFilterCount}
@@ -895,7 +894,7 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
                 value={sortBy}
                 onChange={(e) => handleChangeSort(e.target.value)}
                 aria-label="Sắp xếp sản phẩm"
-                className="text-sm border border-gray-200 rounded-xl px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 text-gray-700 cursor-pointer"
+                className="text-sm border border-gray-200 rounded-xl px-3.5 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 text-gray-700 cursor-pointer"
               >
                 {SORT_OPTIONS.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -906,16 +905,16 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
             </div>
           </div>
 
-          {/* Active filter badges */}
+          {/* Active filter chips */}
           {hasActiveFilters && (
-            <div className="flex flex-wrap items-center gap-2 mb-5 p-3 bg-orange-50/60 border border-orange-100 rounded-xl">
-              <span className="text-xs font-semibold text-orange-800 mr-1">Đang tích chọn:</span>
+            <div className="flex flex-wrap items-center gap-2 mb-5 p-3 bg-white border border-gray-200/80 rounded-xl shadow-2xs">
+              <span className="text-xs font-medium text-gray-500 mr-1">Đang lọc:</span>
               {selectedCategories.map((cat) => (
                 <span
                   key={cat}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-white text-orange-700 border border-orange-200 shadow-xs"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-orange-50 text-orange-700 border border-orange-200/70"
                 >
-                  Danh mục: {cat}
+                  {cat}
                   <button
                     type="button"
                     onClick={() => handleToggleCategory(cat)}
@@ -928,9 +927,9 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
               {selectedBrands.map((brand) => (
                 <span
                   key={brand}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-white text-orange-700 border border-orange-200 shadow-xs"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-orange-50 text-orange-700 border border-orange-200/70"
                 >
-                  Hãng: {brand}
+                  {brand}
                   <button
                     type="button"
                     onClick={() => handleToggleBrand(brand)}
@@ -943,9 +942,9 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
               {selectedModels.map((model) => (
                 <span
                   key={model}
-                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-white text-orange-700 border border-orange-200 shadow-xs"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-orange-50 text-orange-700 border border-orange-200/70"
                 >
-                  🏍️ Xe: {model}
+                  Xe {model}
                   <button
                     type="button"
                     onClick={() => handleToggleModel(model)}
@@ -956,8 +955,8 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
                 </span>
               ))}
               {compatibleBrand && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-white text-orange-700 border border-orange-200 shadow-xs">
-                  Hãng xe: {compatibleBrand}
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-orange-50 text-orange-700 border border-orange-200/70">
+                  {compatibleBrand}
                   <button
                     type="button"
                     onClick={() => {
@@ -971,10 +970,9 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
                 </span>
               )}
               {(minPrice !== undefined || maxPrice !== undefined) && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-white text-orange-700 border border-orange-200 shadow-xs">
-                  Giá:{' '}
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-orange-50 text-orange-700 border border-orange-200/70">
                   {PRICE_RANGES.find((r) => r.min === minPrice && r.max === maxPrice)?.label ??
-                    `${minPrice ? formatCurrencyVND(minPrice) : '0đ'} - ${maxPrice ? formatCurrencyVND(maxPrice) : 'Trở lên'}`}
+                    `${minPrice ? formatCurrencyVND(minPrice) : '0đ'} – ${maxPrice ? formatCurrencyVND(maxPrice) : 'Trở lên'}`}
                   <button
                     type="button"
                     onClick={() => handleSelectPriceRange(undefined, undefined)}
@@ -985,8 +983,8 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
                 </span>
               )}
               {inStockOnly && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-white text-orange-700 border border-orange-200 shadow-xs">
-                  Chỉ còn hàng
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-orange-50 text-orange-700 border border-orange-200/70">
+                  Còn hàng
                   <button
                     type="button"
                     onClick={() => handleToggleInStock(false)}
@@ -997,8 +995,8 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
                 </span>
               )}
               {searchQuery.trim() && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-white text-orange-700 border border-orange-200 shadow-xs">
-                  Từ khóa: &ldquo;{searchQuery}&rdquo;
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-orange-50 text-orange-700 border border-orange-200/70">
+                  &ldquo;{searchQuery}&rdquo;
                   <button
                     type="button"
                     onClick={() => {
@@ -1014,9 +1012,9 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
               <button
                 type="button"
                 onClick={handleClearAllFilters}
-                className="ml-auto text-xs font-semibold text-orange-600 hover:text-orange-800 underline cursor-pointer"
+                className="ml-auto text-xs font-semibold text-gray-500 hover:text-orange-600 transition-colors cursor-pointer"
               >
-                Bỏ chọn tất cả
+                Xóa tất cả
               </button>
             </div>
           )}
@@ -1041,7 +1039,7 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
                 Không tìm thấy sản phẩm phù hợp
               </h3>
               <p className="text-gray-500 text-sm mb-6">
-                Thử bỏ bớt các ô tích chọn hoặc nhấn nút bên dưới để xem toàn bộ sản phẩm
+                Thử điều chỉnh lại bộ lọc hoặc nhấn nút bên dưới để xem toàn bộ sản phẩm
               </p>
               <button
                 type="button"
@@ -1055,26 +1053,26 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
         </div>
       </div>
 
-      {/* ── MODAL POPUP: Giao diện tích chọn lọc sản phẩm khi ấn vào "Lọc sản phẩm" ── */}
+      {/* ── MODAL BỘ LỌC SẢN PHẨM CHUYÊN NGHIỆP ────────────────────────────── */}
       {isFilterModalOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-3 sm:p-6 animate-in fade-in duration-150"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-3 sm:p-6 animate-in fade-in duration-150"
           onClick={() => setIsFilterModalOpen(false)}
         >
           <div
-            className="bg-white w-full max-w-3xl max-h-[90vh] rounded-2xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden"
+            className="bg-white w-full max-w-3xl max-h-[88vh] rounded-2xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 bg-gradient-to-r from-orange-50/80 to-white">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-white">
               <div className="flex items-center gap-3">
-                <span className="w-9 h-9 rounded-xl bg-orange-500 text-white flex items-center justify-center shadow-sm shadow-orange-500/30">
+                <span className="w-9 h-9 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center">
                   <svg
                     className="w-5 h-5"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
-                    strokeWidth={2.2}
+                    strokeWidth={2}
                   >
                     <path
                       strokeLinecap="round"
@@ -1085,10 +1083,10 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
                 </span>
                 <div>
                   <h2 className="text-base sm:text-lg font-bold text-gray-900">
-                    Tích Chọn Lọc Sản Phẩm
+                    Bộ lọc sản phẩm
                   </h2>
                   <p className="text-xs text-gray-500">
-                    Tích chọn một hoặc nhiều tiêu chí bên dưới để lọc chính xác phụ tùng bạn cần
+                    Lọc theo danh mục, dòng xe, thương hiệu và khoảng giá
                   </p>
                 </div>
               </div>
@@ -1096,29 +1094,30 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
               <button
                 type="button"
                 onClick={() => setIsFilterModalOpen(false)}
-                className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition-colors cursor-pointer"
-                aria-label="Đóng bảng lọc"
+                className="w-8 h-8 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-gray-800 flex items-center justify-center transition-colors cursor-pointer"
+                aria-label="Đóng"
               >
-                ✕
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </div>
 
-            {/* Modal Body — Các nhóm tích chọn */}
-            <div className="flex-1 overflow-y-auto p-5 space-y-6">
-              {/* 1. Tích chọn Danh mục phụ tùng */}
+            {/* Modal Body */}
+            <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
+              {/* 1. Danh mục phụ tùng */}
               <div>
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
-                    <span className="w-2 h-4 bg-orange-500 rounded-full" />
-                    1. Chọn Danh Mục Phụ Tùng (có thể tích nhiều)
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500">
+                    Danh mục phụ tùng
                   </h3>
                   {selectedCategories.length > 0 && (
                     <button
                       type="button"
                       onClick={() => handleToggleCategory('')}
-                      className="text-xs text-orange-600 hover:underline font-medium cursor-pointer"
+                      className="text-xs text-orange-600 hover:text-orange-700 font-medium cursor-pointer"
                     >
-                      Bỏ chọn danh mục ({selectedCategories.length})
+                      Bỏ chọn ({selectedCategories.length})
                     </button>
                   )}
                 </div>
@@ -1126,49 +1125,43 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
                   {CATEGORIES.map((cat) => {
                     const isChecked = selectedCategories.includes(cat.value);
                     return (
-                      <label
+                      <button
                         key={cat.value}
+                        type="button"
+                        onClick={() => handleToggleCategory(cat.value)}
                         className={cn(
-                          'flex items-center gap-2.5 p-3 rounded-xl border text-left transition-all cursor-pointer select-none',
+                          'group flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl border text-left transition-all cursor-pointer',
                           isChecked
-                            ? 'bg-orange-50 border-orange-500 text-orange-800 font-semibold shadow-xs ring-1 ring-orange-500/30'
-                            : 'bg-gray-50/60 border-gray-200 text-gray-700 hover:bg-white hover:border-orange-300',
+                            ? 'bg-orange-50/90 border-orange-500 text-orange-700 font-semibold shadow-2xs'
+                            : 'bg-white border-gray-200 text-gray-700 hover:border-orange-300 hover:bg-orange-50/30',
                         )}
                       >
-                        <input
-                          type="checkbox"
-                          checked={isChecked}
-                          onChange={() => handleToggleCategory(cat.value)}
-                          className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-400 cursor-pointer accent-orange-500 flex-shrink-0"
-                        />
-                        <div className="min-w-0 flex-1">
-                          <p className="text-xs sm:text-sm truncate">
-                            {cat.icon} {cat.label}
-                          </p>
-                          <p className="text-[11px] text-gray-400">
-                            {categoryCounts[cat.value] ?? 0} sản phẩm
-                          </p>
-                        </div>
-                      </label>
+                        <span className="flex items-center gap-2.5 min-w-0">
+                          <CheckBoxIndicator checked={isChecked} />
+                          <span className="text-xs sm:text-sm truncate">{cat.label}</span>
+                        </span>
+                        <span className="text-[11px] text-gray-400 flex-shrink-0">
+                          {categoryCounts[cat.value] ?? 0}
+                        </span>
+                      </button>
                     );
                   })}
                 </div>
               </div>
 
-              {/* 2. Tích chọn Dòng xe tương thích */}
+              {/* 2. Dòng xe tương thích */}
               <div className="border-t border-gray-100 pt-5">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
-                    <span className="w-2 h-4 bg-orange-500 rounded-full" />
-                    2. Chọn Dòng Xe Tương Thích (có thể tích nhiều)
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500">
+                    Dòng xe tương thích
                   </h3>
                   {selectedModels.length > 0 && (
                     <button
                       type="button"
                       onClick={() => handleToggleModel('')}
-                      className="text-xs text-orange-600 hover:underline font-medium cursor-pointer"
+                      className="text-xs text-orange-600 hover:text-orange-700 font-medium cursor-pointer"
                     >
-                      Bỏ chọn dòng xe ({selectedModels.length})
+                      Bỏ chọn ({selectedModels.length})
                     </button>
                   )}
                 </div>
@@ -1176,39 +1169,35 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
                   {POPULAR_MODELS.map((m) => {
                     const isChecked = selectedModels.includes(m.value);
                     return (
-                      <label
+                      <button
                         key={m.value}
+                        type="button"
+                        onClick={() => handleToggleModel(m.value)}
                         className={cn(
-                          'flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl border text-left transition-all cursor-pointer select-none',
+                          'group flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl border text-left transition-all cursor-pointer',
                           isChecked
-                            ? 'bg-orange-50 border-orange-500 text-orange-800 font-semibold shadow-xs ring-1 ring-orange-500/30'
-                            : 'bg-gray-50/60 border-gray-200 text-gray-700 hover:bg-white hover:border-orange-300',
+                            ? 'bg-orange-50/90 border-orange-500 text-orange-700 font-semibold shadow-2xs'
+                            : 'bg-white border-gray-200 text-gray-700 hover:border-orange-300 hover:bg-orange-50/30',
                         )}
                       >
-                        <span className="flex items-center gap-2 min-w-0">
-                          <input
-                            type="checkbox"
-                            checked={isChecked}
-                            onChange={() => handleToggleModel(m.value)}
-                            className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-400 cursor-pointer accent-orange-500 flex-shrink-0"
-                          />
-                          <span className="text-xs sm:text-sm truncate">🏍️ {m.label}</span>
+                        <span className="flex items-center gap-2.5 min-w-0">
+                          <CheckBoxIndicator checked={isChecked} />
+                          <span className="text-xs sm:text-sm truncate">{m.label}</span>
                         </span>
                         <span className="text-[11px] text-gray-400 flex-shrink-0">
-                          ({modelCounts[m.value] ?? 0})
+                          {modelCounts[m.value] ?? 0}
                         </span>
-                      </label>
+                      </button>
                     );
                   })}
                 </div>
               </div>
 
-              {/* 3. Tích chọn Thương hiệu */}
+              {/* 3. Thương hiệu */}
               <div className="border-t border-gray-100 pt-5">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2">
-                    <span className="w-2 h-4 bg-orange-500 rounded-full" />
-                    3. Chọn Thương Hiệu Phụ Tùng (có thể tích nhiều)
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500">
+                    Thương hiệu
                   </h3>
                   {selectedBrands.length > 0 && (
                     <button
@@ -1217,9 +1206,9 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
                         setSelectedBrands([]);
                         syncUrl({ brands: [] });
                       }}
-                      className="text-xs text-orange-600 hover:underline font-medium cursor-pointer"
+                      className="text-xs text-orange-600 hover:text-orange-700 font-medium cursor-pointer"
                     >
-                      Bỏ chọn thương hiệu ({selectedBrands.length})
+                      Bỏ chọn ({selectedBrands.length})
                     </button>
                   )}
                 </div>
@@ -1227,63 +1216,56 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
                   {availableBrands.map((b) => {
                     const isChecked = selectedBrands.includes(b.name);
                     return (
-                      <label
+                      <button
                         key={b.name}
+                        type="button"
+                        onClick={() => handleToggleBrand(b.name)}
                         className={cn(
-                          'flex items-center justify-between gap-1.5 px-3 py-2 rounded-xl border text-xs transition-all cursor-pointer select-none',
+                          'group flex items-center justify-between gap-1.5 px-3 py-2 rounded-xl border text-xs transition-all cursor-pointer',
                           isChecked
-                            ? 'bg-orange-50 border-orange-500 text-orange-800 font-semibold shadow-xs'
-                            : 'bg-gray-50/60 border-gray-200 text-gray-700 hover:bg-white hover:border-orange-300',
+                            ? 'bg-orange-50/90 border-orange-500 text-orange-700 font-semibold shadow-2xs'
+                            : 'bg-white border-gray-200 text-gray-700 hover:border-orange-300 hover:bg-orange-50/30',
                         )}
                       >
                         <span className="flex items-center gap-2 truncate">
-                          <input
-                            type="checkbox"
-                            checked={isChecked}
-                            onChange={() => handleToggleBrand(b.name)}
-                            className="w-3.5 h-3.5 text-orange-500 border-gray-300 rounded focus:ring-orange-400 cursor-pointer accent-orange-500 flex-shrink-0"
-                          />
+                          <CheckBoxIndicator checked={isChecked} />
                           <span className="truncate">{b.name}</span>
                         </span>
-                        <span className="text-[10px] text-gray-400">({b.count})</span>
-                      </label>
+                        <span className="text-[10px] text-gray-400">{b.count}</span>
+                      </button>
                     );
                   })}
                 </div>
               </div>
 
-              {/* 4. Khoảng giá & Tình trạng kho */}
+              {/* 4. Khoảng giá & Tình trạng */}
               <div className="border-t border-gray-100 pt-5 grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2 mb-3">
-                    <span className="w-2 h-4 bg-orange-500 rounded-full" />
-                    4. Chọn Mức Giá
+                  <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">
+                    Khoảng giá
                   </h3>
-                  <div className="space-y-1.5">
+                  <div className="space-y-2">
                     {PRICE_RANGES.map((range) => {
                       const isChecked = minPrice === range.min && maxPrice === range.max;
                       return (
-                        <label
+                        <button
                           key={range.label}
-                          className={cn(
-                            'flex items-center gap-2.5 px-3 py-2 rounded-xl border text-xs sm:text-sm transition-all cursor-pointer select-none',
+                          type="button"
+                          onClick={() =>
                             isChecked
-                              ? 'bg-orange-50 border-orange-500 text-orange-800 font-semibold'
-                              : 'bg-gray-50/60 border-gray-200 text-gray-700 hover:bg-white hover:border-orange-300',
+                              ? handleSelectPriceRange(undefined, undefined)
+                              : handleSelectPriceRange(range.min, range.max)
+                          }
+                          className={cn(
+                            'group w-full flex items-center gap-2.5 px-3.5 py-2 rounded-xl border text-xs sm:text-sm transition-all cursor-pointer',
+                            isChecked
+                              ? 'bg-orange-50/90 border-orange-500 text-orange-700 font-semibold'
+                              : 'bg-white border-gray-200 text-gray-700 hover:border-orange-300',
                           )}
                         >
-                          <input
-                            type="checkbox"
-                            checked={isChecked}
-                            onChange={() =>
-                              isChecked
-                                ? handleSelectPriceRange(undefined, undefined)
-                                : handleSelectPriceRange(range.min, range.max)
-                            }
-                            className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-400 cursor-pointer accent-orange-500"
-                          />
+                          <CheckBoxIndicator checked={isChecked} roundedFull />
                           <span>{range.label}</span>
-                        </label>
+                        </button>
                       );
                     })}
                   </div>
@@ -1291,9 +1273,8 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
 
                 <div className="space-y-5">
                   <div>
-                    <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2 mb-3">
-                      <span className="w-2 h-4 bg-orange-500 rounded-full" />
-                      5. Nhập Khoảng Giá Tùy Chọn (VNĐ)
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">
+                      Khoảng giá tùy chỉnh (VNĐ)
                     </h3>
                     <div className="flex items-center gap-2">
                       <input
@@ -1302,8 +1283,8 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
                         value={customMinInput}
                         onChange={(e) => setCustomMinInput(e.target.value)}
                         onBlur={handleApplyCustomPrice}
-                        placeholder="Giá từ (vd: 100000)"
-                        className="w-1/2 px-3 py-2 text-xs sm:text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 text-gray-800"
+                        placeholder="Từ (vd: 100.000)"
+                        className="w-1/2 px-3 py-2 text-xs sm:text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white text-gray-800"
                       />
                       <span className="text-gray-400">—</span>
                       <input
@@ -1312,39 +1293,35 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
                         value={customMaxInput}
                         onChange={(e) => setCustomMaxInput(e.target.value)}
                         onBlur={handleApplyCustomPrice}
-                        placeholder="Đến (vd: 1000000)"
-                        className="w-1/2 px-3 py-2 text-xs sm:text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 text-gray-800"
+                        placeholder="Đến (vd: 1.000.000)"
+                        className="w-1/2 px-3 py-2 text-xs sm:text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 focus:bg-white text-gray-800"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <h3 className="text-sm font-bold text-gray-900 flex items-center gap-2 mb-3">
-                      <span className="w-2 h-4 bg-orange-500 rounded-full" />
-                      6. Tình Trạng & Sắp Xếp
+                    <h3 className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-3">
+                      Tình trạng & Sắp xếp
                     </h3>
-                    <label
+                    <button
+                      type="button"
+                      onClick={() => handleToggleInStock(!inStockOnly)}
                       className={cn(
-                        'flex items-center gap-2.5 px-3 py-2.5 rounded-xl border text-xs sm:text-sm transition-all cursor-pointer select-none mb-2.5',
+                        'group w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm transition-all cursor-pointer mb-2.5',
                         inStockOnly
-                          ? 'bg-orange-50 border-orange-500 text-orange-800 font-semibold'
-                          : 'bg-gray-50/60 border-gray-200 text-gray-700 hover:bg-white hover:border-orange-300',
+                          ? 'bg-orange-50/90 border-orange-500 text-orange-700 font-semibold'
+                          : 'bg-white border-gray-200 text-gray-700 hover:border-orange-300',
                       )}
                     >
-                      <input
-                        type="checkbox"
-                        checked={inStockOnly}
-                        onChange={(e) => handleToggleInStock(e.target.checked)}
-                        className="w-4 h-4 text-orange-500 border-gray-300 rounded focus:ring-orange-400 cursor-pointer accent-orange-500"
-                      />
-                      <span>Chỉ hiển thị phụ tùng đang còn hàng</span>
-                    </label>
+                      <CheckBoxIndicator checked={inStockOnly} />
+                      <span>Chỉ hiển thị sản phẩm đang còn hàng</span>
+                    </button>
 
                     <select
                       value={sortBy}
                       onChange={(e) => handleChangeSort(e.target.value)}
                       aria-label="Sắp xếp theo"
-                      className="w-full px-3 py-2.5 text-xs sm:text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 text-gray-700 font-medium cursor-pointer"
+                      className="w-full px-3.5 py-2.5 text-xs sm:text-sm bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-400 text-gray-700 font-medium cursor-pointer"
                     >
                       {SORT_OPTIONS.map((opt) => (
                         <option key={opt.value} value={opt.value}>
@@ -1358,13 +1335,13 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
             </div>
 
             {/* Modal Footer */}
-            <div className="flex items-center justify-between gap-3 px-5 py-4 border-t border-gray-100 bg-gray-50">
+            <div className="flex items-center justify-between gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50/80">
               <button
                 type="button"
                 onClick={handleClearAllFilters}
-                className="px-4 py-2.5 text-xs sm:text-sm font-semibold text-gray-700 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl transition-colors cursor-pointer"
+                className="px-4 py-2.5 text-xs sm:text-sm font-semibold text-gray-600 hover:text-gray-900 bg-white hover:bg-gray-100 border border-gray-200 rounded-xl transition-colors cursor-pointer"
               >
-                Bỏ tích chọn tất cả
+                Thiết lập lại
               </button>
 
               <button
@@ -1373,18 +1350,9 @@ export function ProductsCatalog({ initialProducts }: ProductsCatalogProps) {
                   handleApplyCustomPrice();
                   setIsFilterModalOpen(false);
                 }}
-                className="flex items-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-bold text-white bg-orange-500 hover:bg-orange-600 rounded-xl shadow-lg shadow-orange-500/25 transition-all cursor-pointer"
+                className="flex items-center gap-2 px-6 py-2.5 text-xs sm:text-sm font-semibold text-white bg-orange-500 hover:bg-orange-600 rounded-xl shadow-md shadow-orange-500/20 transition-all cursor-pointer"
               >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2.2}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-                <span>Xem {filteredProducts.length} sản phẩm phù hợp</span>
+                <span>Xem {filteredProducts.length} kết quả</span>
               </button>
             </div>
           </div>
